@@ -1,0 +1,55 @@
+<form>
+<label name="number"/>
+<field name="number"/>
+<label name="type_"/>
+<field name="type_"/>
+<label name="function_"/>
+<field name="function_"/>
+<label name="special_condition"/>
+<field name="special_condition"/>
+<label name="party"/>
+<field name="party"/>
+<label name="manual_party"/>
+<field name="manual_party"/>
+<label name="sale"/>
+<field name="sale"/>
+<notebook>
+  <page name="lines">
+    <field name="lines"/>
+  </page>
+  <page name="descriptions">
+    <field name="descriptions"/>
+  </page>
+  <page name="parties">
+    <field name="parties"/>
+  </page>
+  <page id="informaion" string="Information">
+    <label name="document_date"/>
+    <field name="document_date"/>
+    <label name="delivery_date"/>
+    <field name="delivery_date"/>
+    <label name="first_deliver_date"/>
+    <field name="first_deliver_date"/>
+    <label name="last_deliver_date"/>
+    <field name="last_deliver_date"/>
+    <label name="company"/>
+    <field name="company"/>
+    <newline/>
+    <label name="currency_code"/>
+    <field name="currency_code"/>
+    <label name="currency"/>
+    <field name="currency"/>
+  </page>
+</notebook>
+<label name="gross_amount"/>
+<field name="gross_amount"/>
+<label name="base_amount"/>
+<field name="base_amount"/>
+<label name="state"/>
+<field name="state"/>
+<group id="buttons">
+    <button name="create_sale"/>
+    <button name="search_references"/>
+    <button name="cancel_sale"/>
+</group>
+</form>

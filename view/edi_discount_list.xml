@@ -1,0 +1,6 @@
+<tree>
+  <field name="type_"/>
+  <field name="discount"/>
+  <field name="percent"/>
+  <field name="amount"/>
+</tree>

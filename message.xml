@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data grouped="1">
+      <record model="ir.message" id="msg_no_product">
+        <field name="text">Cannot confirm sale without product "%(code)s".</field>
+      </record>
+      <record model="ir.message" id="msg_no_cancel_sale">
+        <field name="text">Cannot cancel edi sale if sale with number "%(number)s is not cancelled"</field>
+      </record>
+    </data>
+</tryton>

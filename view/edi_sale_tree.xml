@@ -1,0 +1,8 @@
+<tree>
+  <field name="company"/>
+  <field name="number"/>
+  <field name="party"/>
+  <field name="document_date"/>
+  <field name="base_amount"/>
+  <field name="gross_amount"/>
+</tree>

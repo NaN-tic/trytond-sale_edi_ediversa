@@ -1,0 +1,6 @@
+<tree>
+  <field name="name"/>
+  <field name="edi_code"/>
+  <field name="type_"/>
+  <field name="party"/>
+</tree>

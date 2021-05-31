@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<tryton>
+    <data>
+
+      <record model="ir.ui.view" id="edi_sale_view_form">
+          <field name="model">edi.sale</field>
+          <field name="type">form</field>
+          <field name="name">edi_sale_form</field>
+      </record>
+      <record model="ir.ui.view" id="edi_sale_view_tree">
+          <field name="model">edi.sale</field>
+          <field name="type">tree</field>
+          <field name="name">edi_sale_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="edi_sale_line_view_form">
+          <field name="model">edi.sale.line</field>
+          <field name="type">form</field>
+          <field name="name">edi_sale_line_form</field>
+      </record>
+      <record model="ir.ui.view" id="edi_sale_line_view_tree">
+          <field name="model">edi.sale.line</field>
+          <field name="type">tree</field>
+          <field name="name">edi_sale_line_tree</field>
+      </record>
+
+      <record model="ir.ui.view" id="edi_sale_line_qty_view_tree">
+          <field name="model">edi.sale.line.quantity</field>
+          <field name="type">tree</field>
+          <field name="name">edi_line_qty_list</field>
+      </record>
+
+      <record model="ir.ui.view" id="edi_sale_line_tax_view_tree">
+          <field name="model">edi.sale.tax</field>
+          <field name="type">tree</field>
+          <field name="name">edi_line_tax_list</field>
+      </record>
+
+      <record model="ir.ui.view" id="edi_sale_line_pialin_view_tree">
+          <field name="model">edi.sale.line.pialin</field>
+          <field name="type">tree</field>
+          <field name="name">edi_line_pialin</field>
+      </record>
+
+      <record model="ir.ui.view" id="edi_sale_discount_view_tree">
+          <field name="model">edi.sale.discount</field>
+          <field name="type">tree</field>
+          <field name="name">edi_discount_list</field>
+      </record>
+      <record model="ir.ui.view" id="edi_sale_party_view_tree">
+          <field name="model">edi.sale.party</field>
+          <field name="type">tree</field>
+          <field name="name">edi_party_list</field>
+      </record>
+
+      <record model="ir.action.act_window" id="act_edi_sale_form">
+          <field name="name">Edi Sales</field>
+          <field name="res_model">edi.sale</field>
+      </record>
+
+      <menuitem parent="sale.menu_sale"
+              action="act_edi_sale_form"
+              id="menu_edi_sales"
+              sequence="0" icon="tryton-list"/>
+
+      <record model="ir.action.act_window.view" id="act_edi_sales_form_view1">
+          <field name="sequence" eval="10"/>
+          <field name="view" ref="edi_sale_view_tree"/>
+          <field name="act_window" ref="act_edi_sale_form"/>
+      </record>
+      <record model="ir.action.act_window.view" id="act_edi_sale_form_view2">
+          <field name="sequence" eval="20"/>
+          <field name="view" ref="edi_sale_view_form"/>
+          <field name="act_window" ref="act_edi_sale_form"/>
+      </record>
+
+        <record model="ir.action.act_window.domain" id="act_sale_edi_domain_draft">
+        <field name="name">Draft</field>
+        <field name="sequence" eval="10"/>
+        <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+        <field name="act_window" ref="act_edi_sale_form"/>
+      </record>
+
+      <record model="ir.action.act_window.domain" id="act_sale_edi_domain_done">
+        <field name="name">Done</field>
+        <field name="sequence" eval="10"/>
+        <field name="domain" eval="[('state', '=', 'done')]" pyson="1"/>
+        <field name="act_window" ref="act_edi_sale_form"/>
+      </record>
+      <record model="ir.action.act_window.domain" id="act_sale_edi_domain_cancel">
+        <field name="name">Cancel</field>
+        <field name="sequence" eval="10"/>
+        <field name="domain" eval="[('state', '=', 'cancel')]" pyson="1"/>
+        <field name="act_window" ref="act_edi_sale_form"/>
+      </record>
+
+      <record model="ir.ui.view" id="sale_configuration_view_form">
+          <field name="model">sale.configuration</field>
+          <field name="inherit" ref="sale.sale_configuration_view_form"/>
+          <field name="name">configuration_form</field>
+      </record>
+
+      <record model="ir.cron" id="cron_edi_sale">
+          <field name="active" eval="True"/>
+          <field name="interval_number" eval="1"/>
+          <field name="interval_type">hours</field>
+          <field name="method">edi.sale|import_sales</field>
+      </record>
+
+      <record model="ir.model.button" id="create_sale_button">
+          <field name="name">create_sale</field>
+          <field name="string">Create Sales</field>
+          <field name="model" search="[('model', '=', 'edi.sale')]"/>
+      </record>
+
+      <record model="ir.model.button-res.group"
+          id="create_sale_button_group_account">
+          <field name="button" ref="create_sale_button"/>
+          <field name="group" ref="sale.group_sale_admin"/>
+      </record>
+
+      <record model="ir.model.button" id="cancel_sale_button">
+          <field name="name">cancel_sale</field>
+          <field name="string">Cancel Sales</field>
+          <field name="model" search="[('model', '=', 'edi.sale')]"/>
+      </record>
+
+      <record model="ir.model.button-res.group"
+          id="cancel_sale_button_group_account">
+          <field name="button" ref="cancel_sale_button"/>
+          <field name="group" ref="sale.group_sale_admin"/>
+      </record>
+
+        <record model="ir.model.button" id="search_related_button">
+          <field name="name">search_references</field>
+          <field name="string">Search References</field>
+          <field name="model" search="[('model', '=', 'edi.sale')]"/>
+      </record>
+      <record model="ir.model.button-res.group"
+          id="search_related_button_group_account">
+          <field name="button" ref="search_related_button"/>
+          <field name="group" ref="sale.group_sale_admin"/>
+      </record>
+
+
+
+
+    </data>
+</tryton>

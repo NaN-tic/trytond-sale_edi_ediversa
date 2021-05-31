@@ -1,0 +1,44 @@
+<form>
+<label name="sequence"/>
+<field name="sequence"/>
+<label name="code"/>
+<field name="code"/>
+<label name="code_type"/>
+<field name="code_type"/>
+<label name="product"/>
+<field name="product"/>
+<label name="quantity"/>
+<field name="quantity"/>
+<label name="unit_price"/>
+<field name="unit_price"/>
+<label name="gross_price"/>
+<field name="gross_price"/>
+<notebook>
+  <page name="quantities">
+      <field name="quantities"/>
+  </page>
+  <page name="discounts">
+      <field name="discounts"/>
+  </page>
+  <page name="taxes">
+      <field name="taxes"/>
+  </page>
+  <page name="pialin">
+      <field name="pialin"/>
+  </page>
+  <page id="dates" string="Dates">
+    <label name="delivery_date"/>
+    <field name="delivery_date"/>
+    <label name="intervention_date"/>
+    <field name="intervention_date"/>
+    <label name="expiration_days"/>
+    <field name="expiration_days"/>
+  </page>
+</notebook>
+<label name="sale_line"/>
+<field name="sale_line"/>
+<label name="base_amount"/>
+<field name="base_amount"/>
+<label name="total_amount"/>
+<field name="total_amount"/>
+</form>

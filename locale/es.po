@@ -1,0 +1,725 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:edi.sale,base_amount:"
+msgid "Base Amount"
+msgstr "Importe"
+
+msgctxt "field:edi.sale,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:edi.sale,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:edi.sale,currency_code:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:edi.sale,delivery_date:"
+msgid "Delivery Date"
+msgstr "Fecha de entrega"
+
+msgctxt "field:edi.sale,descriptions:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:edi.sale,document_date:"
+msgid "Document Date"
+msgstr "Fecha documento"
+
+msgctxt "field:edi.sale,first_deliver_date:"
+msgid "First Delivery Date"
+msgstr "Primera fecha de envio"
+
+msgctxt "field:edi.sale,function_:"
+msgid "Function Type"
+msgstr "Tipo función"
+
+msgctxt "field:edi.sale,gross_amount:"
+msgid "Gross Amount"
+msgstr "Importe"
+
+msgctxt "field:edi.sale,last_deliver_date:"
+msgid "Last Delivery Date"
+msgstr "Última fecha de entrega"
+
+msgctxt "field:edi.sale,lines:"
+msgid "Lines"
+msgstr "Líneas"
+
+msgctxt "field:edi.sale,manual_party:"
+msgid "Manual Party"
+msgstr "Tercero (Manual)"
+
+msgctxt "field:edi.sale,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:edi.sale,parties:"
+msgid "Parties"
+msgstr "Terceros"
+
+msgctxt "field:edi.sale,party:"
+msgid "Party"
+msgstr "Terceros"
+
+msgctxt "field:edi.sale,references:"
+msgid "References"
+msgstr "Referencias"
+
+msgctxt "field:edi.sale,sale:"
+msgid "Sale"
+msgstr "Venta"
+
+msgctxt "field:edi.sale,special_condition:"
+msgid "Special Condition"
+msgstr "Condiciones especiales"
+
+msgctxt "field:edi.sale,state:"
+msgid "State"
+msgstr "Estado"
+
+msgctxt "field:edi.sale,type_:"
+msgid "Document Type"
+msgstr "Tipo documento"
+
+msgctxt "field:edi.sale.description,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:edi.sale.description,sale:"
+msgid "Sale"
+msgstr "Venta"
+
+msgctxt "field:edi.sale.description,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:edi.sale.discount,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:edi.sale.discount,discount:"
+msgid "Discount Type"
+msgstr "Tipo descuento"
+
+msgctxt "field:edi.sale.discount,line:"
+msgid "Edi sle Line"
+msgstr "Línea Venta Edi"
+
+msgctxt "field:edi.sale.discount,percent:"
+msgid "Percent"
+msgstr "Porcentajes"
+
+msgctxt "field:edi.sale.discount,sale_edi:"
+msgid "Sale Edi"
+msgstr "Venta Edi"
+
+msgctxt "field:edi.sale.discount,sequence:"
+msgid "sequence"
+msgstr "Secuencia"
+
+msgctxt "field:edi.sale.discount,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:edi.sale.line,base_amount:"
+msgid "Base Amount"
+msgstr "Base imponible"
+
+msgctxt "field:edi.sale.line,code:"
+msgid "code"
+msgstr "Código"
+
+msgctxt "field:edi.sale.line,code_type:"
+msgid "Code Type"
+msgstr "Tipo código"
+
+msgctxt "field:edi.sale.line,delivery_date:"
+msgid "Delivery Date"
+msgstr "Fecha de envio"
+
+msgctxt "field:edi.sale.line,discounts:"
+msgid "Discounts"
+msgstr "Descuentos"
+
+msgctxt "field:edi.sale.line,edi_sale:"
+msgid "Edi Sale"
+msgstr "Edi Venta"
+
+msgctxt "field:edi.sale.line,expiration_date:"
+msgid "Expiration Date"
+msgstr "Fecha caducidad"
+
+msgctxt "field:edi.sale.line,expiration_days:"
+msgid "Expiration Days"
+msgstr "Días caducidad"
+
+msgctxt "field:edi.sale.line,gross_price:"
+msgid "Gross Price"
+msgstr "Precio Bruto"
+
+msgctxt "field:edi.sale.line,intervention_date:"
+msgid "Intervention Date"
+msgstr "Fecha Intervención"
+
+msgctxt "field:edi.sale.line,pialin:"
+msgid "Pialin"
+msgstr "PIALIN"
+
+msgctxt "field:edi.sale.line,product:"
+msgid "Product"
+msgstr "Productos"
+
+msgctxt "field:edi.sale.line,quantities:"
+msgid "Quantities"
+msgstr "Cantidades"
+
+msgctxt "field:edi.sale.line,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:edi.sale.line,sale_line:"
+msgid "sale Line"
+msgstr "Línea de venta"
+
+msgctxt "field:edi.sale.line,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:edi.sale.line,taxes:"
+msgid "Taxes"
+msgstr "Impuestos"
+
+msgctxt "field:edi.sale.line,total_amount:"
+msgid "Total Amount"
+msgstr "Importe"
+
+msgctxt "field:edi.sale.line,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:edi.sale.line.pialin,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:edi.sale.line.pialin,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:edi.sale.line.pialin,line:"
+msgid "Edi Sale Line"
+msgstr "Líneas Venta Edi"
+
+msgctxt "field:edi.sale.line.pialin,qualifier:"
+msgid "Qualifier"
+msgstr "Calificador"
+
+msgctxt "field:edi.sale.line.pialin,type:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:edi.sale.line.quantity,conditions:"
+msgid "Especial Conditions"
+msgstr "Condiciones especiales"
+
+msgctxt "field:edi.sale.line.quantity,line:"
+msgid "Line"
+msgstr "Línea"
+
+msgctxt "field:edi.sale.line.quantity,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:edi.sale.line.quantity,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:edi.sale.line.quantity,uom_char:"
+msgid "Uom"
+msgstr "UdM"
+
+msgctxt "field:edi.sale.party,account_bank:"
+msgid "Account Bank"
+msgstr "Cuenta bancaria"
+
+msgctxt "field:edi.sale.party,city:"
+msgid "City"
+msgstr "Ciudad"
+
+msgctxt "field:edi.sale.party,commercial_register:"
+msgid "Comercial Register"
+msgstr "Registro comercial"
+
+msgctxt "field:edi.sale.party,country_code:"
+msgid "Country_code"
+msgstr "Código país"
+
+msgctxt "field:edi.sale.party,edi_code:"
+msgid "Edi Code"
+msgstr "Código Edi"
+
+msgctxt "field:edi.sale.party,edi_sale:"
+msgid "Edi Sale"
+msgstr "Venta edi"
+
+msgctxt "field:edi.sale.party,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:edi.sale.party,party:"
+msgid "Party"
+msgstr "Terceros"
+
+msgctxt "field:edi.sale.party,street:"
+msgid "Street"
+msgstr "Calle"
+
+msgctxt "field:edi.sale.party,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:edi.sale.party,vat:"
+msgid "Vat"
+msgstr "VAT"
+
+msgctxt "field:edi.sale.party,zip:"
+msgid "zip"
+msgstr "Código postal"
+
+msgctxt "field:edi.sale.reference,edi_sale:"
+msgid "Sale"
+msgstr "Venta"
+
+msgctxt "field:edi.sale.reference,line:"
+msgid "Line"
+msgstr "Línea"
+
+msgctxt "field:edi.sale.reference,origin:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:edi.sale.reference,reference:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:edi.sale.reference,reference_date:"
+msgid "Reference Date"
+msgstr "Fecha referencia"
+
+msgctxt "field:edi.sale.reference,type_:"
+msgid "Reference Code"
+msgstr "Código Referencia"
+
+msgctxt "field:edi.sale.tax,line:"
+msgid "Line"
+msgstr "Línea"
+
+msgctxt "field:edi.sale.tax,percent:"
+msgid "Percent"
+msgstr "Porcentaje"
+
+msgctxt "field:edi.sale.tax,tax_amount:"
+msgid "Tax Amount"
+msgstr "Importe Impuesto"
+
+msgctxt "field:edi.sale.tax,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:sale.configuration,inbox_path_edi:"
+msgid "Inbox Path EDI"
+msgstr "Directorio Edi "
+
+msgctxt "field:sale.sale,edi:"
+msgid "Edi"
+msgstr "EDI"
+
+msgctxt "field:sale.sale,edi_sale:"
+msgid "Sale"
+msgstr "Venta"
+
+msgctxt "field:sale.sale-edi.sale,edi_sale:"
+msgid "EdiSale"
+msgstr "Venta Edi"
+
+msgctxt "field:sale.sale-edi.sale,sale:"
+msgid "Sale"
+msgstr "Venta"
+
+msgctxt "model:edi.sale,name:"
+msgid "Edi Sale"
+msgstr "Edi Venta"
+
+msgctxt "model:edi.sale.description,name:"
+msgid "Sale Description"
+msgstr "Descripción Venta"
+
+msgctxt "model:edi.sale.discount,name:"
+msgid "Sale Edi discount"
+msgstr "Descuentos"
+
+msgctxt "model:edi.sale.line,name:"
+msgid "Edi Sale Line"
+msgstr "Línea de Venta Edi"
+
+msgctxt "model:edi.sale.line.pialin,name:"
+msgid "Edi Sale Line PIALIN"
+msgstr "PIALIN"
+
+msgctxt "model:edi.sale.line.quantity,name:"
+msgid "Invoice Edi Line Qty"
+msgstr "Cantaidad"
+
+msgctxt "model:edi.sale.party,name:"
+msgid "Party Edi"
+msgstr "Tercero"
+
+msgctxt "model:edi.sale.reference,name:"
+msgid "Sale Reference"
+msgstr "Referencia"
+
+msgctxt "model:edi.sale.tax,name:"
+msgid "Edi Sale Tax"
+msgstr "Impuestos"
+
+msgctxt "model:ir.action,name:act_edi_sale_form"
+msgid "Edi Sales"
+msgstr "Venta Edi"
+
+msgctxt "model:ir.action.act_window.domain,name:act_sale_edi_domain_cancel"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "model:ir.action.act_window.domain,name:act_sale_edi_domain_done"
+msgid "Done"
+msgstr "Finalizar"
+
+msgctxt "model:ir.action.act_window.domain,name:act_sale_edi_domain_draft"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "model:ir.message,text:msg_no_cancel_sale"
+msgid "Cannot cancel edi sale if sale with number \"%(number)s is not cancelled\""
+msgstr ""
+"No se puede cancelar una venta edi si la venta con número \"%(number)s\" no "
+"está cancelada."
+
+msgctxt "model:ir.message,text:msg_no_product"
+msgid "Cannot confirm sale without product \"%(code)s\"."
+msgstr "No se puede confirmar la venda sin el producto \"%(code)s\"."
+
+msgctxt "model:ir.model.button,string:cancel_sale_button"
+msgid "Cancel Sales"
+msgstr "Cancelar"
+
+msgctxt "model:ir.model.button,string:create_sale_button"
+msgid "Create Sales"
+msgstr "Crear Venta"
+
+msgctxt "model:ir.model.button,string:search_related_button"
+msgid "Search References"
+msgstr "Buscar referencias"
+
+msgctxt "model:ir.ui.menu,name:menu_edi_sales"
+msgid "Edi Sales"
+msgstr "Ventas Edi "
+
+msgctxt "model:sale.sale-edi.sale,name:"
+msgid "SaleSale - EdiSale"
+msgstr ""
+
+msgctxt "selection:edi.sale,function_:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "selection:edi.sale,function_:"
+msgid "Copy"
+msgstr "Copiar"
+
+msgctxt "selection:edi.sale,function_:"
+msgid "Modify"
+msgstr "Modificar"
+
+msgctxt "selection:edi.sale,function_:"
+msgid "Original"
+msgstr "Original"
+
+msgctxt "selection:edi.sale,function_:"
+msgid "Replazement"
+msgstr "Reemplazo"
+
+msgctxt "selection:edi.sale,special_condition:"
+msgid "Entregar el pedido entero"
+msgstr "Entregar el pedido entero"
+
+msgctxt "selection:edi.sale,special_condition:"
+msgid "Enviar pero no facturar"
+msgstr "Enviar pero no facturar"
+
+msgctxt "selection:edi.sale,special_condition:"
+msgid "Facturar pero no reabastecer"
+msgstr "Facturar pero no enviar"
+
+msgctxt "selection:edi.sale,state:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "selection:edi.sale,state:"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "selection:edi.sale,state:"
+msgid "done"
+msgstr "Realizado"
+
+msgctxt "selection:edi.sale,type_:"
+msgid "Pedido consignacion"
+msgstr "Pedido consignado"
+
+msgctxt "selection:edi.sale,type_:"
+msgid "Pedido normal"
+msgstr "Pedido normal"
+
+msgctxt "selection:edi.sale,type_:"
+msgid "Pedido parcial que cancela un pedido abierto"
+msgstr "Pedido parcial que cancela un pedido abierto"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Delivery Information"
+msgstr "Información de entrega"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "General Information"
+msgstr "Información general"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Information about marks and numbers"
+msgstr "Información sobre marcas y números"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Invoice Information"
+msgstr "Informació de factura"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Mutual definition"
+msgstr "Definición mutua"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Package Information"
+msgstr "Información de paquete"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Purchase Information"
+msgstr "Información de compra"
+
+msgctxt "selection:edi.sale.description,type_:"
+msgid "Tax Information"
+msgstr "Información de Impuesto"
+
+msgctxt "selection:edi.sale.discount,discount:"
+msgid "Commercial"
+msgstr "Comercial"
+
+msgctxt "selection:edi.sale.discount,discount:"
+msgid "Prompt Payment"
+msgstr "Pronto pago"
+
+msgctxt "selection:edi.sale.discount,discount:"
+msgid "Royal decree"
+msgstr "Real decreto"
+
+msgctxt "selection:edi.sale.discount,type_:"
+msgid "Charge"
+msgstr "Cargo"
+
+msgctxt "selection:edi.sale.discount,type_:"
+msgid "Discount"
+msgstr "Descuentos"
+
+msgctxt "selection:edi.sale.line,code_type:"
+msgid "DUN14"
+msgstr "DUN14"
+
+msgctxt "selection:edi.sale.line,code_type:"
+msgid "EAN"
+msgstr "EAN"
+
+msgctxt "selection:edi.sale.line,code_type:"
+msgid "EAN13"
+msgstr "EAN13"
+
+msgctxt "selection:edi.sale.line,code_type:"
+msgid "EAN14"
+msgstr "EAN14"
+
+msgctxt "selection:edi.sale.line,code_type:"
+msgid "EAN8"
+msgstr "EAN8"
+
+msgctxt "selection:edi.sale.line,code_type:"
+msgid "EN"
+msgstr "EN"
+
+msgctxt "selection:edi.sale.line.pialin,qualifier:"
+msgid "Free Text"
+msgstr "Texto libre"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Expedition"
+msgstr "Expedición"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Internal Group"
+msgstr "Grupo interno"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Lot Number"
+msgstr "Número de lote"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Manufacturer Code"
+msgstr "Código fabricante"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "National Code"
+msgstr "Código nacional"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Purchaser Code"
+msgstr "Código de comprador"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Serial Number"
+msgstr "Número de série"
+
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Supplier Code"
+msgstr "Código de proveedor"
+
+msgctxt "selection:edi.sale.line.quantity,conditions:"
+msgid "Invoice but not send"
+msgstr "Facturar pero no enviar"
+
+msgctxt "selection:edi.sale.line.quantity,conditions:"
+msgid "Send but no Invoice"
+msgstr "Facturar però no enviar"
+
+msgctxt "selection:edi.sale.line.quantity,conditions:"
+msgid "Send full sale"
+msgstr "Enviar pedido entero"
+
+msgctxt "selection:edi.sale.line.quantity,type_:"
+msgid "Expedition"
+msgstr "Expedición"
+
+msgctxt "selection:edi.sale.line.quantity,type_:"
+msgid "Free included"
+msgstr "Gratis Incluido"
+
+msgctxt "selection:edi.sale.line.quantity,type_:"
+msgid "Purchased"
+msgstr "Comprado"
+
+msgctxt "selection:edi.sale.line.quantity,type_:"
+msgid "Without Charge"
+msgstr "Sin cargo"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Endorser"
+msgstr "Probador"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Final Receiver"
+msgstr "Recibidor final"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Invoice Issuer"
+msgstr "Emisor Factura"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Invoice Receiver"
+msgstr "Recibidor de factura"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Legal Purchaser"
+msgstr "Comprador Legal"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Legal Supplier"
+msgstr "Proveedor legal"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "NAD"
+msgstr "NAD"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "NADMR"
+msgstr "NADMR"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "NADPE"
+msgstr "NADPE"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "NADPW"
+msgstr "NAPDW"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Payment Issuer"
+msgstr "Emisor de pago"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Purchaser"
+msgstr "Comprador"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Sender"
+msgstr "Remitente"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Stock Receiver"
+msgstr "Receptor de estoc"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Supplier"
+msgstr "Proveedor"
+
+msgctxt "selection:edi.sale.reference,type_:"
+msgid "Shipment Date"
+msgstr "Fecha de envio"
+
+msgctxt "selection:edi.sale.reference,type_:"
+msgid "Shipment Number"
+msgstr "Número de albarán"
+
+msgctxt "selection:edi.sale.tax,type_:"
+msgid "Alcohol Tax"
+msgstr "Impuesto Alcohol"
+
+msgctxt "selection:edi.sale.tax,type_:"
+msgid "Equivalence Surcharge"
+msgstr "Recargo de equivalencia"
+
+msgctxt "selection:edi.sale.tax,type_:"
+msgid "Exempt"
+msgstr "Exento"
+
+msgctxt "selection:edi.sale.tax,type_:"
+msgid "IGIC"
+msgstr "IGIC"
+
+msgctxt "selection:edi.sale.tax,type_:"
+msgid "IRPF"
+msgstr "IRPF"
+
+msgctxt "selection:edi.sale.tax,type_:"
+msgid "VAT"
+msgstr "VAT"
+
+msgctxt "selection:ir.cron,method:"
+msgid "Import EDI Orders"
+msgstr "Importar Pedidos"

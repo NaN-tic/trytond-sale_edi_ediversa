@@ -1,0 +1,6 @@
+<tree>
+  <field name="type"/>
+  <field name="code"/>
+  <field name="qualifier"/>
+  <field name="description"/>
+</tree>

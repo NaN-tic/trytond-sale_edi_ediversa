@@ -1,0 +1,6 @@
+<tree>
+<field name="type_"/>
+<field name="quantity"/>
+<field name="uom_char"/>
+<field name="conditions"/>
+</tree>
