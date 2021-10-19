@@ -46,7 +46,7 @@ class Cron(metaclass=PoolMeta):
 class SaleConfiguration(metaclass=PoolMeta):
     __name__ = 'sale.configuration'
 
-    inbox_path_edi = fields.Char('Inbox Path EDI')
+    inbox_path_edi = fields.Char('EDI Sale Inbox Path')
 
 
 class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
