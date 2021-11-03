@@ -331,8 +331,8 @@ msgid "Type"
 msgstr "Tipus"
 
 msgctxt "field:sale.configuration,inbox_path_edi:"
-msgid "Inbox Path EDI"
-msgstr "Camí als directori EDI"
+msgid "EDI Sale Inbox Path"
+msgstr "EDI Ruta d'entrada Venda"
 
 msgctxt "field:sale.sale,edi:"
 msgid "Edi"
@@ -723,3 +723,11 @@ msgstr "VAT"
 msgctxt "selection:ir.cron,method:"
 msgid "Import EDI Orders"
 msgstr "Importar Comandes Edi"
+
+msgctxt "view:edi.sale.line:"
+msgid "Dates"
+msgstr "Dates"
+
+msgctxt "view:edi.sale:"
+msgid "Information"
+msgstr "Informació"
