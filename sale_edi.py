@@ -612,7 +612,7 @@ class SaleEdi(ModelSQL, ModelView):
                 line.on_change_product()
                 line.quantity = eline.quantity
                 line.on_change_quantity()
-                sale.edi = True
+                sale.is_edi = True
                 sale.lines += (line,)
                 sale.origin = str(edi_sale)
                 sale.edi_sale = edi_sale
@@ -627,10 +627,21 @@ class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
 
     edi_sale = fields.One2One('sale.sale-edi.sale', 'sale', 'edi_sale', 'Sale')
-    edi = fields.Boolean('Edi', readonly=True)
+    is_edi = fields.Boolean('Is Edi', readonly=True)
+
+    @classmethod
+    def __register__(cls, module_name):
+        table = cls.__table_handler__(module_name)
+
+        # Field name change:
+        if table.column_exist('edi'):
+            table.column_rename('edi', 'is_edi')
+
+        super().__register__(module_name)
+
 
     @staticmethod
-    def default_edi():
+    def default_is_edi():
         return False
 
     @classmethod
