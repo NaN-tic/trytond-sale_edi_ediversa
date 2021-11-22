@@ -17,6 +17,7 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
 
+
 def to_date(value):
     if value is None or value == '':
         return None
@@ -25,6 +26,7 @@ def to_date(value):
     if value == '00000000':
         return
     return datetime.strptime(value, DATE_FORMAT)
+
 
 def to_decimal(value, digits=2):
     if value is None or value == '':
@@ -77,6 +79,7 @@ class SaleDescription(ModelSQL, ModelView):
         self.type_ = message.pop(0)
         self.description = message.pop(0)
 
+
 class EdiSaleReference(ModelSQL, ModelView):
     'Sale Reference'
     __name__ = 'edi.sale.reference'
@@ -123,15 +126,18 @@ class PIALIN(ModelSQL, ModelView):
 
     line = fields.Many2One('edi.sale.line', 'Edi Sale Line',
         ondelete='CASCADE')
-    type = fields.Selection([(None, ''), ('SA', 'Supplier Code'),
-        ('IN', 'Purchaser Code'), ('SN', 'Serial Number'), ('NB', 'Lot Number'),
-        ('EN', 'Expedition'), ('GB', 'Internal Group'),
-        ('MF', 'Manufacturer Code'), ('UA', 'Purchaser Code'),
-        ('CNA', 'National Code')], 'Type', readonly=True)
+    type = fields.Selection([
+            (None, ''), ('SA', 'Supplier Code'),
+            ('IN', 'Purchaser Code'), ('SN', 'Serial Number'),
+            ('NB', 'Lot Number'), ('EN', 'Expedition'),
+            ('GB', 'Internal Group'), ('MF', 'Manufacturer Code'),
+            ('UA', 'Purchaser Code'), ('CNA', 'National Code')
+            ], 'Type', readonly=True)
     code = fields.Char('Code', readonly=True)
     qualifier = fields.Selection([(None, ''), ('F', 'Free Text')], 'Qualifier',
         readonly=True)
     description = fields.Char('Description', readonly=True)
+
 
 class SaleEdiLineQty(ModelSQL, ModelView):
     'Invoice Edi Line Qty'
@@ -146,6 +152,7 @@ class SaleEdiLineQty(ModelSQL, ModelView):
     conditions = fields.Selection([(None, ''), ('81E', 'Invoice but not send'),
         ('82E', 'Send but no Invoice'), ('83E', 'Send full sale')],
         'Especial Conditions', readonly=True)
+
 
 class SaleEdiTax(ModelSQL, ModelView):
     'Edi Sale Tax'
@@ -163,6 +170,7 @@ class SaleEdiTax(ModelSQL, ModelView):
         # TODO: Not implementd, now use product tax
         pass
 
+
 class SaleEdiDiscount(ModelSQL, ModelView):
     'Sale Edi discount'
     __name__ = 'edi.sale.discount'
@@ -178,6 +186,7 @@ class SaleEdiDiscount(ModelSQL, ModelView):
     sale_edi = fields.Many2One('edi.sale', 'Sale Edi',
          ondelete='CASCADE', readonly=True)
     line = fields.Many2One('edi.sale.line', 'Edi sle Line', ondelete='CASCADE')
+
 
 class SaleEdiLine(ModelSQL, ModelView):
     'Edi Sale Line'
@@ -196,12 +205,13 @@ class SaleEdiLine(ModelSQL, ModelView):
     intervention_date = fields.Date('Intervention Date', readonly=True)
     expiration_days = fields.Integer('Expiration Days', readonly=True)
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
-    total_amount = fields.Numeric('Total Amount', digits=(16, 2), readonly=True)
+    total_amount = fields.Numeric('Total Amount', digits=(16, 2),
+        readonly=True)
     unit_price = fields.Numeric('Unit Price', digits=(16, 4), readonly=True)
     gross_price = fields.Numeric('Gross Price', digits=(16, 4), readonly=True)
     taxes = fields.One2Many('edi.sale.tax', 'line', 'Taxes', readonly=True)
-    quantities = fields.One2Many('edi.sale.line.quantity', 'line', 'Quantities',
-        readonly=True)
+    quantities = fields.One2Many('edi.sale.line.quantity', 'line',
+        'Quantities', readonly=True)
     discounts = fields.One2Many('edi.sale.discount', 'line', 'Discounts',
         readonly=True)
     product = fields.Many2One('product.product', 'Product')
@@ -299,7 +309,8 @@ class SaleEdiLine(ModelSQL, ModelView):
         sequence = message.pop(0) if message else None
         discount.sequence = int(sequence) or None
         discount.discount = message.pop(0) if message else ''
-        discount.percent = to_decimal(message.pop(0)) if message else Decimal(0)
+        discount.percent = (to_decimal(message.pop(0)) if message else
+            Decimal(0))
         discount.amount = to_decimal(message.pop(0)) if message else Decimal(0)
         if not getattr(self, 'discounts', False):
             self.discounts = []
@@ -307,13 +318,17 @@ class SaleEdiLine(ModelSQL, ModelView):
 
     def search_related(self):
         pool = Pool()
-        Barcode = pool.get('product.code')
-        domain = [('number', '=', self.code)]
-        barcode = Barcode.search(domain, limit=1)
+        ProductIdentifier = pool.get('product.identifier')
+        domain = [
+            ('type', '=', 'ean'),
+            ('code', '=', self.code)
+            ]
+        barcode = ProductIdentifier.search(domain, limit=1)
         if not barcode:
             return
         product = barcode[0].product
         self.product = product
+
 
 class SaleEdi(ModelSQL, ModelView):
     'Edi Sale'
@@ -352,7 +367,8 @@ class SaleEdi(ModelSQL, ModelView):
     currency_code = fields.Char('Currency', readonly=True)
     currency = fields.Many2One('currency.currency', 'Currency')
     lines = fields.One2Many('edi.sale.line', 'edi_sale', 'Lines')
-    gross_amount = fields.Numeric('Gross Amount', digits=(16, 2), readonly=True)
+    gross_amount = fields.Numeric('Gross Amount', digits=(16, 2),
+        readonly=True)
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
     manual_party = fields.Many2One('party.party', 'Manual Party')
     party = fields.Function(fields.Many2One('party.party', 'Party'),
@@ -433,7 +449,8 @@ class SaleEdi(ModelSQL, ModelView):
         pass
 
     def read_MOARES(self, message):
-        self.base_amount = to_decimal(message.pop(0)) if message else Decimal(0)
+        self.base_amount = (to_decimal(message.pop(0)) if message else
+            Decimal(0))
         self.gross_amount = to_decimal(message.pop(0)
             ) if message else Decimal(0)
 
@@ -463,7 +480,7 @@ class SaleEdi(ModelSQL, ModelView):
                 sale_edi.read_ORD(line)
             elif 'FTX' in msg_id:
                 edi_sale_description = EdiSaleDescription()
-                edi_sale_description.read_FTX()
+                edi_sale_description.read_FTX(line)
                 if not getattr(sale_edi, 'descriptions', False):
                     sale_edi.descriptions = []
                 sale_edi.descriptions += (edi_sale_description,)
@@ -638,7 +655,6 @@ class Sale(metaclass=PoolMeta):
             table.column_rename('edi', 'is_edi')
 
         super().__register__(module_name)
-
 
     @staticmethod
     def default_is_edi():
