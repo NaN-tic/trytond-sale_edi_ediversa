@@ -242,10 +242,6 @@ msgctxt "field:edi.sale.line.quantity,uom_char:"
 msgid "Uom"
 msgstr "UdM"
 
-msgctxt "field:edi.sale.party,account_bank:"
-msgid "Account Bank"
-msgstr "Cuenta bancaria"
-
 msgctxt "field:edi.sale.party,city:"
 msgid "City"
 msgstr "Ciudad"
@@ -657,8 +653,12 @@ msgid "NAD"
 msgstr "NAD"
 
 msgctxt "selection:edi.sale.party,type_:"
-msgid "NADMR"
-msgstr "NADMR"
+msgid "Message Receiver"
+msgstr "Receptor del mensaje"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "Message Sender"
+msgstr "Emisor del mensaje"
 
 msgctxt "selection:edi.sale.party,type_:"
 msgid "NADPE"

@@ -3,6 +3,8 @@
 # the full copyright notices and license terms.
 from trytond.pool import Pool
 from . import sale_edi
+
+
 def register():
     Pool.register(
         sale_edi.Cron,
