@@ -1,16 +1,16 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
+import os
+from datetime import datetime
+from decimal import Decimal
+
 from trytond.model import fields, ModelSQL, ModelView
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
-import os
-from trytond.modules.account_invoice_edi.invoice import (SupplierEdiMixin,
-    SUPPLIER_TYPE)
-from datetime import datetime
-from decimal import Decimal
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from trytond.pyson import Eval
+from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
 
 DEFAULT_FILES_LOCATION = '/tmp/'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -57,6 +57,83 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
 
     edi_sale = fields.Many2One('edi.sale', 'Edi Sale')
 
+    def read_NADMS(self, message):
+        self.type_ = 'NADMS'
+        self.edi_code = message.pop(0) if message else ''
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+
+    def read_NADMR(self, message):
+        self.type_ = 'NADMR'
+        self.edi_code = message.pop(0) if message else ''
+
+    def read_NADSU(self, message):
+        self.type_ = 'NADSU'
+        self.edi_code = message.pop(0) if message else ''
+        message.pop(0)
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NADBY(self, message):
+        self.type_ = 'NADBY'
+        self.edi_code = message.pop(0) if message else ''
+        message.pop(0)
+        message.pop(0)
+        message.pop(0)
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NADDP(self, message):
+        self.type_ = 'NADDP'
+        self.edi_code = message.pop(0) if message else ''
+        message.pop(0)
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+
+    def read_NADIV(self, message):
+        self.type_ = 'NADIV'
+        self.edi_code = message.pop(0) if message else ''
+        message.pop(0)
+        self.name = message.pop(0) if message else ''
+        if message:
+            self.street = message.pop(0)
+        if message:
+            self.city = message.pop(0)
+        if message:
+            self.zip = message.pop(0)
+        if message:
+            self.vat = message.pop(0)
+
+    def read_NAD(self, message):
+        self.type_ = 'NAD'
+        self.edi_code = message.pop(0) if message else ''
+        if message:
+            self.vat = message.pop(0)
+
 
 class SaleDescription(ModelSQL, ModelView):
     'Sale Description'
@@ -77,7 +154,8 @@ class SaleDescription(ModelSQL, ModelView):
 
     def read_FTX(self, message):
         self.type_ = message.pop(0)
-        self.description = message.pop(0)
+        message.pop(0)
+        self.description = message.pop(0) if message else ''
 
 
 class EdiSaleReference(ModelSQL, ModelView):
@@ -104,10 +182,8 @@ class EdiSaleReference(ModelSQL, ModelView):
 
     def read_message(self, message):
         message.pop(0)
-        type_ = message.pop(0)
-        value = message.pop(0)
-        self.type_ = type_
-        self.value = value
+        self.type_ = message.pop(0) if message else ''
+        self.value = message.pop(0) if message else ''
 
     def search_reference(self):
         model = None
@@ -406,13 +482,13 @@ class SaleEdi(ModelSQL, ModelView):
         if self.manual_party:
             return self.manual_party.id
         for s in self.parties:
-            if s.type_ == 'NADSU':
+            if s.type_ == 'NADBY':
                 return s.party and s.party.id
 
     @classmethod
     def search_party(cls, name, clause):
         return ['OR', ('manual_party', ) + tuple(clause[1:]),
-                [('parties.type_', '=', 'NADSU'),
+                [('parties.type_', '=', 'NADBY'),
                     ('parties.party', ) + tuple(clause[1:])]]
 
     def read_ORD(self, message):
@@ -619,6 +695,16 @@ class SaleEdi(ModelSQL, ModelView):
             sale.date = edi_sale.document_date
             sale.party = edi_sale.party
             sale.on_change_party()
+
+            for party in sale.parties:
+                if party.type == 'NADIV':
+                    sale.invoice_address = (party.address if party.address else
+                        party.party.addresses[0])
+                elif party.type == 'NADDP':
+                    sale.shipment_party = party.party
+                    sale.on_change_shipment_party()
+                    sale.shipment_address = party.address
+
             sale.lines = []
             for eline in edi_sale.lines:
                 if not eline.product:
