@@ -49,10 +49,27 @@
           <field name="type">tree</field>
           <field name="name">edi_discount_list</field>
       </record>
+
+      <record model="ir.ui.view" id="edi_sale_description_view_form">
+          <field name="model">edi.sale.description</field>
+          <field name="type">form</field>
+          <field name="name">edi_sale_description_form</field>
+      </record>
+      <record model="ir.ui.view" id="edi_sale_description_view_tree">
+          <field name="model">edi.sale.description</field>
+          <field name="type">tree</field>
+          <field name="name">edi_sale_description_list</field>
+      </record>
+
+      <record model="ir.ui.view" id="edi_sale_party_view_form">
+          <field name="model">edi.sale.party</field>
+          <field name="type">form</field>
+          <field name="name">party_edi_form</field>
+      </record>
       <record model="ir.ui.view" id="edi_sale_party_view_tree">
           <field name="model">edi.sale.party</field>
           <field name="type">tree</field>
-          <field name="name">edi_party_list</field>
+          <field name="name">party_edi_tree</field>
       </record>
 
       <record model="ir.action.act_window" id="act_edi_sale_form">
