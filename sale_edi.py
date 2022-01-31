@@ -68,10 +68,6 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
         if message:
             self.zip = message.pop(0)
 
-    def read_NADMR(self, message):
-        self.type_ = 'NADMR'
-        self.edi_code = message.pop(0) if message else ''
-
     def read_NADSU(self, message):
         self.type_ = 'NADSU'
         self.edi_code = message.pop(0) if message else ''
