@@ -691,6 +691,7 @@ class SaleEdi(ModelSQL, ModelView):
             sale.date = edi_sale.document_date
             sale.party = edi_sale.party
             sale.on_change_party()
+            sale.reference = edi_sale.number
 
             for party in edi_sale.parties:
                 if party.type_ == 'NADIV':
