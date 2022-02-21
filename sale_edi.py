@@ -693,10 +693,10 @@ class SaleEdi(ModelSQL, ModelView):
             sale.on_change_party()
 
             for party in edi_sale.parties:
-                if party.type == 'NADIV':
+                if party.type_ == 'NADIV':
                     sale.invoice_address = (party.address if party.address else
                         party.party.addresses[0])
-                elif party.type == 'NADDP':
+                elif party.type_ == 'NADDP':
                     sale.shipment_party = party.party
                     sale.on_change_shipment_party()
                     sale.shipment_address = party.address
