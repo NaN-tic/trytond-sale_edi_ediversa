@@ -71,7 +71,8 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
     def read_NADSU(self, message):
         self.type_ = 'NADSU'
         self.edi_code = message.pop(0) if message else ''
-        message.pop(0)
+        if message:
+            message.pop(0)
         self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
@@ -85,9 +86,12 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
     def read_NADBY(self, message):
         self.type_ = 'NADBY'
         self.edi_code = message.pop(0) if message else ''
-        message.pop(0)
-        message.pop(0)
-        message.pop(0)
+        if message:
+            message.pop(0)
+        if message:
+            message.pop(0)
+        if message:
+            message.pop(0)
         self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
@@ -101,7 +105,8 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
     def read_NADDP(self, message):
         self.type_ = 'NADDP'
         self.edi_code = message.pop(0) if message else ''
-        message.pop(0)
+        if message:
+            message.pop(0)
         self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
@@ -113,7 +118,8 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
     def read_NADIV(self, message):
         self.type_ = 'NADIV'
         self.edi_code = message.pop(0) if message else ''
-        message.pop(0)
+        if message:
+            message.pop(0)
         self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
