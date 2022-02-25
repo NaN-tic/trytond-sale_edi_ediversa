@@ -304,13 +304,22 @@ class SaleEdiLine(ModelSQL, ModelView):
         return Decimal('0')
 
     def read_PIALIN(self, message):
-        Pialin = Pool().get('edi.sale.line.pialin')
-        pialin = Pialin()
+        if not getattr(self, 'pialin', False):
+            Pialin = Pool().get('edi.sale.line.pialin')
+            pialin = Pialin()
+            self.pialin = (pialin,)
+        pialin = self.pialin[-1]
         pialin.type = message.pop(0)
         pialin.code = message.pop(0)
+
+    def read_IMDLIN(self, message):
         if not getattr(self, 'pialin', False):
-            self.pialin = []
-        self.pialin += (pialin,)
+            Pialin = Pool().get('edi.sale.line.pialin')
+            pialin = Pialin()
+            self.pialin = (pialin,)
+        pialin = self.pialin[-1]
+        pialin.qualifier = message.pop(0) if message else ''
+        pialin.description = message[-1] if message else ''
 
     def read_QTYLIN(self, message):
         QTY = Pool().get('edi.sale.line.quantity')
@@ -325,13 +334,6 @@ class SaleEdiLine(ModelSQL, ModelView):
             self.quantities = []
         self.quantities += (qty,)
 
-    def read_IMDLIN(self, message):
-        if not self.pialin:
-            return
-        pialin = self.pialin[-1]
-        pialin.qualifier = message.pop(0) if message else ''
-        pialin.description = message[-1] if message else ''
-
     def read_ALILIN(self, message):
         if not self.pialin:
             return
@@ -343,7 +345,8 @@ class SaleEdiLine(ModelSQL, ModelView):
         self.expiration_date = to_date(message.pop(0)) if message else None
         self.delivery_date = to_date(message.pop(0)) if message else None
         self.intervention_date = to_date(message.pop(0)) if message else None
-        self.expiration_days = int(message.pop(0) if message else 0)
+        days = message.pop(0) if message else 0
+        self.expiration_days = int(days if days else 0)
 
     def read_FTXLIN(self, message):
         pass
@@ -532,6 +535,10 @@ class SaleEdi(ModelSQL, ModelView):
         pass
 
     def read_TOD(self, message):
+        # Not implemented
+        pass
+
+    def read_CNTRES(self, message):
         # Not implemented
         pass
 
