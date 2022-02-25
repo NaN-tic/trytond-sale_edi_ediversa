@@ -722,7 +722,7 @@ msgstr "VAT"
 
 msgctxt "selection:ir.cron,method:"
 msgid "Import EDI Orders"
-msgstr "Importar Pedidos"
+msgstr "Importar Pedidos EDI"
 
 msgctxt "view:edi.sale.line:"
 msgid "Dates"
