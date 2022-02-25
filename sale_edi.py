@@ -524,6 +524,11 @@ class SaleEdi(ModelSQL, ModelView):
         pass
 
     def read_RFF(self, message):
+        # Not implemented
+        pass
+
+    def read_TOD(self, message):
+        # Not implemented
         pass
 
     def read_MOARES(self, message):
