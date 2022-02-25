@@ -394,6 +394,10 @@ class SaleEdiLine(ModelSQL, ModelView):
             self.discounts = []
         self.discounts += (discount,)
 
+    def read_MEALIN(self, message):
+        # Not implemented
+        pass
+
     def search_related(self):
         pool = Pool()
         ProductIdentifier = pool.get('product.identifier')
