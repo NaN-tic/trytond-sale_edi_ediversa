@@ -218,7 +218,7 @@ class SaleEdiLineQty(ModelSQL, ModelView):
     type_ = fields.Selection([('21', 'Purchased'), ('59', 'Expedition'),
         ('192', 'Free included'), ('15E', 'Without Charge')], 'Type',
         readonly=True)
-    quantity = fields.Numeric('Quantity', digits=(16, 2), readonly=True)
+    quantity = fields.Float('Quantity', digits=(16, 4), readonly=True)
     uom_char = fields.Char('Uom', readonly=True)
     line = fields.Many2One('edi.sale.line', 'Line', ondelete='CASCADE')
     conditions = fields.Selection([(None, ''), ('81E', 'Invoice but not send'),
@@ -287,7 +287,7 @@ class SaleEdiLine(ModelSQL, ModelView):
     discounts = fields.One2Many('edi.sale.discount', 'line', 'Discounts',
         readonly=True)
     product = fields.Many2One('product.product', 'Product')
-    quantity = fields.Function(fields.Numeric('Quantity', digits=(16, 2)),
+    quantity = fields.Function(fields.Float('Quantity', digits=(16, 4)),
          'get_sale_quantity')
     sale_line = fields.Many2One('sale.line', 'sale Line', readonly=True)
 
@@ -295,7 +295,7 @@ class SaleEdiLine(ModelSQL, ModelView):
         for q in self.quantities:
             if q.type_ == '21':
                 return q.quantity
-        return Decimal('0')
+        return 0
 
     def read_PIALIN(self, message):
         Pialin = Pool().get('edi.sale.line.pialin')
@@ -310,7 +310,8 @@ class SaleEdiLine(ModelSQL, ModelView):
         QTY = Pool().get('edi.sale.line.quantity')
         qty = QTY()
         qty.type_ = message.pop(0) if message else ''
-        qty.quantity = to_decimal(message.pop(0), 4) if message else Decimal(0)
+        quantity = message.pop(0) if message else None
+        qty.quantity = float(quantity) if quantity else 0
         if qty.type_ == '21':
             self.quantity = qty.quantity
         if message:
