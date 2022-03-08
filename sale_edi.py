@@ -372,8 +372,10 @@ class SaleEdiLine(ModelSQL, ModelView):
         self.sequence = message.pop(0) if message else None
 
     def read_MOALIN(self, message):
-        self.base_amount = message.pop(0) if message else 0
-        self.total_amount = message.pop(0) if message else 0
+        self.base_amount = (to_decimal(message.pop(0)) if message else
+            Decimal(0))
+        self.total_amount = (to_decimal(message.pop(0)) if message else
+            Decimal(0))
 
     def read_ALCLIN(self, message):
         Discount = Pool().get('edi.sale.discount')
