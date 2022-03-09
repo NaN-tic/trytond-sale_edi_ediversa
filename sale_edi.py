@@ -711,10 +711,13 @@ class SaleEdi(ModelSQL, ModelView):
             sale.date = edi_sale.document_date
             sale.party = edi_sale.party
             sale.on_change_party()
+
             sale.reference = edi_sale.number
 
             for party in edi_sale.parties:
                 if party.type_ == 'NADIV':
+                    sale.invoice_party = party.party
+                    sale.on_change_invoice_party()
                     sale.invoice_address = (party.address if party.address else
                         party.party.addresses[0])
                 elif party.type_ == 'NADDP':
