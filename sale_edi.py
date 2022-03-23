@@ -716,7 +716,6 @@ class SaleEdi(ModelSQL, ModelView):
             sale.date = edi_sale.document_date
             sale.party = edi_sale.party
             sale.on_change_party()
-
             sale.reference = edi_sale.number
 
             for party in edi_sale.parties:
@@ -731,19 +730,23 @@ class SaleEdi(ModelSQL, ModelView):
                     sale.shipment_address = party.address
 
             sale.lines = []
-            for eline in edi_sale.lines:
-                if not eline.product:
-                    raise UserError(gettext('sale_edi.msg_no_product',
-                            code=eline.code))
-                line = Line()
-                line.product = eline.product
-                line.on_change_product()
-                line.quantity = eline.quantity
-                line.on_change_quantity()
-                sale.is_edi = True
-                sale.lines += (line,)
-                sale.origin = str(edi_sale)
-                sale.edi_sale = edi_sale
+            price_list = None
+            if hasattr(sale, 'price_list'):
+                price_list = sale.price_list.id if sale.price_list else None
+            with Transaction().set_context(price_list=price_list):
+                for eline in edi_sale.lines:
+                    if not eline.product:
+                        raise UserError(gettext('sale_edi.msg_no_product',
+                                code=eline.code))
+                    line = Line()
+                    line.product = eline.product
+                    line.on_change_product()
+                    line.quantity = eline.quantity
+                    line.on_change_quantity()
+                    sale.lines += (line,)
+            sale.is_edi = True
+            sale.origin = str(edi_sale)
+            sale.edi_sale = edi_sale
             to_save.append(sale)
             edi_sale.state = 'done'
             to_done.append(edi_sale)
