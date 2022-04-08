@@ -212,7 +212,12 @@ class PIALIN(ModelSQL, ModelView):
             ('UA', 'Purchaser Code'), ('CNA', 'National Code')
             ], 'Type', readonly=True)
     code = fields.Char('Code', readonly=True)
-    qualifier = fields.Selection([(None, ''), ('F', 'Free Text')], 'Qualifier',
+    qualifier = fields.Selection([
+            (None, ''),
+            ('F', 'Free Text'),
+            ('C', 'Encoded Description'),
+            ('E', 'Short Description'),
+            ], 'Qualifier',
         readonly=True)
     description = fields.Char('Description', readonly=True)
 
