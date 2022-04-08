@@ -564,6 +564,14 @@ msgctxt "selection:edi.sale.line.pialin,qualifier:"
 msgid "Free Text"
 msgstr "Texto libre"
 
+msgctxt "selection:edi.sale.line.pialin,qualifier:"
+msgid "Encoded Description"
+msgstr "Descripción codificada"
+
+msgctxt "selection:edi.sale.line.pialin,qualifier:"
+msgid "Short Description"
+msgstr "Descripción corta"
+
 msgctxt "selection:edi.sale.line.pialin,type:"
 msgid "Expedition"
 msgstr "Expedición"
