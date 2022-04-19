@@ -493,7 +493,7 @@ msgid "Draft"
 msgstr "Borrador"
 
 msgctxt "selection:edi.sale,state:"
-msgid "done"
+msgid "Done"
 msgstr "Realizado"
 
 msgctxt "selection:edi.sale,type_:"

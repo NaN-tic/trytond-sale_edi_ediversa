@@ -493,7 +493,7 @@ msgid "Draft"
 msgstr "Esborrany"
 
 msgctxt "selection:edi.sale,state:"
-msgid "done"
+msgid "Done"
 msgstr "Realitzades"
 
 msgctxt "selection:edi.sale,type_:"

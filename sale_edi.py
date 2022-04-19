@@ -450,8 +450,11 @@ class SaleEdi(ModelSQL, ModelView):
          'get_party', searcher='search_party')
     references = fields.One2Many('edi.sale.reference',
         'edi_sale', 'References', readonly=True)
-    state = fields.Selection([('draft', 'Draft'), ('done', 'done'),
-        ('cancel', 'Cancel')], 'State', readonly=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('done', 'Done'),
+        ('cancel', 'Cancel'),
+        ], 'State', readonly=True)
     sale = fields.One2One('sale.sale-edi.sale', 'edi_sale', 'sale', 'Sale')
     sale_pricelist_from_edi = fields.Selection([
         ('yes', 'Yes'),
@@ -682,7 +685,7 @@ class SaleEdi(ModelSQL, ModelView):
         to_save = []
         for esale in edi_sales:
             if esale.sale and esale.sale.state != 'cancel':
-                raise UserError(gettext('sale_edi.msg_no_cancel_sale',
+                raise UserError(gettext('sale_edi_ediversa.msg_no_cancel_sale',
                 number=esale.number))
             esale.state = 'cancel'
             to_save.append(esale)
@@ -703,7 +706,7 @@ class SaleEdi(ModelSQL, ModelView):
             if edi_sale.sale:
                 continue
             sale = Sale(**default_values)
-            sale.date = edi_sale.document_date
+            sale.sale_date = edi_sale.document_date
             sale.party = edi_sale.party
             sale.on_change_party()
             sale.reference = edi_sale.number
@@ -720,11 +723,11 @@ class SaleEdi(ModelSQL, ModelView):
             sale.lines = []
             for eline in edi_sale.lines:
                 if not eline.product:
-                    raise UserError(gettext('sale_edi.msg_no_product',
-                            code=eline.code))
+                    raise UserError(gettext('sale_edi_ediversa.msg_no_product',
+                            code=eline.code or ''))
                 if not eline.product.salable:
-                    raise UserError(gettext('sale_edi.msg_no_product_salable',
-                            code=eline.code))
+                    raise UserError(gettext('sale_edi_ediversa.msg_no_product_salable',
+                            code=eline.code or ''))
                 line = Line()
                 line.product = eline.product
                 line.on_change_product()
@@ -750,6 +753,15 @@ class SaleEdi(ModelSQL, ModelView):
             to_done.append(edi_sale)
         Sale.save(to_save)
         cls.save(to_done)
+
+    @classmethod
+    def copy(cls, edi_sales, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('state', 'draft')
+        return super(SaleEdi, cls).copy(edi_sales, default=default)
 
 
 class Sale(metaclass=PoolMeta):
