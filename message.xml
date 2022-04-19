@@ -9,5 +9,8 @@ this repository contains the full copyright notices and license terms. -->
       <record model="ir.message" id="msg_no_cancel_sale">
         <field name="text">Cannot cancel edi sale if sale with number "%(number)s is not cancelled"</field>
       </record>
+      <record model="ir.message" id="msg_no_product_salable">
+        <field name="text">Cannot confirm sale without product "%(code)s" is salable.</field>
+      </record>
     </data>
 </tryton>

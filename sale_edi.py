@@ -722,6 +722,9 @@ class SaleEdi(ModelSQL, ModelView):
                 if not eline.product:
                     raise UserError(gettext('sale_edi.msg_no_product',
                             code=eline.code))
+                if not eline.product.salable:
+                    raise UserError(gettext('sale_edi.msg_no_product_salable',
+                            code=eline.code))
                 line = Line()
                 line.product = eline.product
                 line.on_change_product()
