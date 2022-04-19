@@ -11,6 +11,8 @@
 <field name="party"/>
 <label name="manual_party"/>
 <field name="manual_party"/>
+<label name="sale_pricelist_from_edi"/>
+<field name="sale_pricelist_from_edi"/>
 <label name="sale"/>
 <field name="sale"/>
 <notebook>

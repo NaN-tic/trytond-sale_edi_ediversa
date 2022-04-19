@@ -453,6 +453,11 @@ class SaleEdi(ModelSQL, ModelView):
     state = fields.Selection([('draft', 'Draft'), ('done', 'done'),
         ('cancel', 'Cancel')], 'State', readonly=True)
     sale = fields.One2One('sale.sale-edi.sale', 'edi_sale', 'sale', 'Sale')
+    sale_pricelist_from_edi = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No'),
+        ('party', 'Party'),
+        ], "Sale PriceList From EDI", sort=False)
 
     @classmethod
     def __setup__(cls):
@@ -476,6 +481,10 @@ class SaleEdi(ModelSQL, ModelView):
     @staticmethod
     def default_company():
         return Transaction().context.get('company')
+
+    @staticmethod
+    def default_sale_pricelist_from_edi():
+        return 'party'
 
     def get_party(self, name):
         if self.manual_party:
@@ -538,6 +547,9 @@ class SaleEdi(ModelSQL, ModelView):
         PartyEdi = pool.get('edi.sale.party')
         # Configuration = pool.get('stock.configuration')
 
+        default_values = SaleEdi.default_get(SaleEdi._fields.keys(),
+            with_rec_name=False)
+
         # config = Configuration(1)
         separator = '|'  # TODO config.separator
 
@@ -551,7 +563,7 @@ class SaleEdi(ModelSQL, ModelView):
             line = line.split(separator)
             msg_id = line.pop(0)
             if msg_id == 'ORD':
-                sale_edi = SaleEdi()
+                sale_edi = SaleEdi(**default_values)
                 sale_edi.read_ORD(line)
             elif 'FTX' in msg_id:
                 edi_sale_description = EdiSaleDescription()
@@ -715,6 +727,17 @@ class SaleEdi(ModelSQL, ModelView):
                 line.on_change_product()
                 line.quantity = eline.quantity
                 line.on_change_quantity()
+                if (edi_sale.sale_pricelist_from_edi == 'yes'
+                        or edi_sale.party.sale_pricelist_from_edi):
+                    pricelist_from_edi = True
+                else:
+                    pricelist_from_edi = False
+                if pricelist_from_edi:
+                    if hasattr(line, 'gross_unit_price'):
+                        line.gross_unit_price = eline.unit_price
+                        line.on_change_gross_unit_price()
+                    else:
+                        line.unit_price = eline.unit_price
                 sale.is_edi = True
                 sale.lines += (line,)
                 sale.origin = str(edi_sale)
