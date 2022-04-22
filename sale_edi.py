@@ -733,11 +733,14 @@ class SaleEdi(ModelSQL, ModelView):
                 line.on_change_product()
                 line.quantity = eline.quantity
                 line.on_change_quantity()
-                if (edi_sale.sale_pricelist_from_edi == 'yes'
-                        or edi_sale.party.sale_pricelist_from_edi):
+
+                if edi_sale.sale_pricelist_from_edi == 'yes':
                     pricelist_from_edi = True
+                elif edi_sale.sale_pricelist_from_edi == 'party':
+                    pricelist_from_edi = edi_sale.party.sale_pricelist_from_edi
                 else:
                     pricelist_from_edi = False
+
                 if pricelist_from_edi:
                     if hasattr(line, 'gross_unit_price'):
                         line.gross_unit_price = eline.unit_price

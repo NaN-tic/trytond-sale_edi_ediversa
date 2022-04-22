@@ -420,6 +420,12 @@ msgctxt "model:ir.message,text:msg_no_product"
 msgid "Cannot confirm sale without product \"%(code)s\"."
 msgstr "No se puede confirmar la venda sin el producto \"%(code)s\"."
 
+msgctxt "model:ir.message,text:msg_no_product_salable"
+msgid "Cannot confirm sale without product \"%(code)s\" is salable."
+msgstr ""
+"No es puede confirmar la venta sin que el producto \"%(code)s\" sea "
+"vendible."
+
 msgctxt "model:ir.model.button,string:cancel_sale_button"
 msgid "Cancel Sales"
 msgstr "Cancelar"
@@ -489,12 +495,12 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 msgctxt "selection:edi.sale,state:"
-msgid "Draft"
-msgstr "Borrador"
-
-msgctxt "selection:edi.sale,state:"
 msgid "Done"
 msgstr "Realizado"
+
+msgctxt "selection:edi.sale,state:"
+msgid "Draft"
+msgstr "Borrador"
 
 msgctxt "selection:edi.sale,type_:"
 msgid "Pedido consignacion"

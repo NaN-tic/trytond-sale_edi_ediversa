@@ -76,7 +76,7 @@ msgstr "Venda"
 
 msgctxt "field:edi.sale,sale_pricelist_from_edi:"
 msgid "Sale PriceList From EDI"
-msgstr "Preu venta desde EDI"
+msgstr "Preu venda desde EDI"
 
 msgctxt "field:edi.sale,special_condition:"
 msgid "Special Condition"
@@ -420,6 +420,12 @@ msgctxt "model:ir.message,text:msg_no_product"
 msgid "Cannot confirm sale without product \"%(code)s\"."
 msgstr "No es pot confirmar la venda sense el producte \"%(code)s\"."
 
+msgctxt "model:ir.message,text:msg_no_product_salable"
+msgid "Cannot confirm sale without product \"%(code)s\" is salable."
+msgstr ""
+"No es pot confirmar la venda sense que el producte \"%(code)s\" sigui "
+"vendible."
+
 msgctxt "model:ir.model.button,string:cancel_sale_button"
 msgid "Cancel Sales"
 msgstr "Cancelar"
@@ -489,12 +495,12 @@ msgid "Cancel"
 msgstr "Cancel·la"
 
 msgctxt "selection:edi.sale,state:"
-msgid "Draft"
-msgstr "Esborrany"
-
-msgctxt "selection:edi.sale,state:"
 msgid "Done"
 msgstr "Realitzades"
+
+msgctxt "selection:edi.sale,state:"
+msgid "Draft"
+msgstr "Esborrany"
 
 msgctxt "selection:edi.sale,type_:"
 msgid "Pedido consignacion"
