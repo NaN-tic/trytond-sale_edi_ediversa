@@ -747,10 +747,10 @@ class SaleEdi(ModelSQL, ModelView):
                         line.on_change_gross_unit_price()
                     else:
                         line.unit_price = eline.unit_price
-                sale.is_edi = True
                 sale.lines += (line,)
-                sale.origin = str(edi_sale)
-                sale.edi_sale = edi_sale
+            sale.is_edi = True
+            sale.origin = str(edi_sale)
+            sale.edi_sale = edi_sale
             to_save.append(sale)
             edi_sale.state = 'done'
             to_done.append(edi_sale)
