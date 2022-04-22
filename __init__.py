@@ -3,10 +3,12 @@
 # the full copyright notices and license terms.
 from trytond.pool import Pool
 from . import sale_edi
+from . import party
 
 
 def register():
     Pool.register(
+        party.Party,
         sale_edi.Cron,
         sale_edi.EdiSaleReference,
         sale_edi.EdiSaleSale,
@@ -21,7 +23,3 @@ def register():
         sale_edi.SaleEdiLineQty,
         sale_edi.SaleEdiTax,
         module='sale_edi_ediversa', type_='model')
-    Pool.register(
-        module='sale_edi_ediversa', type_='wizard')
-    Pool.register(
-        module='sale_edi_ediversa', type_='report')
