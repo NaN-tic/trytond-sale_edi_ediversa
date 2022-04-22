@@ -64,7 +64,7 @@ msgstr "Terceros"
 
 msgctxt "field:edi.sale,party:"
 msgid "Party"
-msgstr "Terceros"
+msgstr "Tercero"
 
 msgctxt "field:edi.sale,references:"
 msgid "References"
@@ -73,6 +73,10 @@ msgstr "Referencias"
 msgctxt "field:edi.sale,sale:"
 msgid "Sale"
 msgstr "Venta"
+
+msgctxt "field:edi.sale,sale_pricelist_from_edi:"
+msgid "Sale PriceList From EDI"
+msgstr "Precio venta desde EDI"
 
 msgctxt "field:edi.sale,special_condition:"
 msgid "Special Condition"
@@ -242,6 +246,10 @@ msgctxt "field:edi.sale.line.quantity,uom_char:"
 msgid "Uom"
 msgstr "UdM"
 
+msgctxt "field:edi.sale.party,address:"
+msgid "Address"
+msgstr "Dirección"
+
 msgctxt "field:edi.sale.party,city:"
 msgid "City"
 msgstr "Ciudad"
@@ -326,17 +334,21 @@ msgctxt "field:edi.sale.tax,type_:"
 msgid "Type"
 msgstr "Tipo"
 
+msgctxt "field:party.party,sale_pricelist_from_edi:"
+msgid "Sale PriceList From EDI"
+msgstr "Precio venta desde EDI"
+
 msgctxt "field:sale.configuration,inbox_path_edi:"
 msgid "EDI Sale Inbox Path"
 msgstr "EDI Ruta de entrada Venta"
 
-msgctxt "field:sale.sale,edi:"
-msgid "Edi"
-msgstr "EDI"
-
 msgctxt "field:sale.sale,edi_sale:"
 msgid "Sale"
 msgstr "Venta"
+
+msgctxt "field:sale.sale,is_edi:"
+msgid "Is Edi"
+msgstr "Es EDI"
 
 msgctxt "field:sale.sale-edi.sale,edi_sale:"
 msgid "EdiSale"
@@ -408,6 +420,12 @@ msgctxt "model:ir.message,text:msg_no_product"
 msgid "Cannot confirm sale without product \"%(code)s\"."
 msgstr "No se puede confirmar la venda sin el producto \"%(code)s\"."
 
+msgctxt "model:ir.message,text:msg_no_product_salable"
+msgid "Cannot confirm sale without product \"%(code)s\" is salable."
+msgstr ""
+"No es puede confirmar la venta sin que el producto \"%(code)s\" sea "
+"vendible."
+
 msgctxt "model:ir.model.button,string:cancel_sale_button"
 msgid "Cancel Sales"
 msgstr "Cancelar"
@@ -426,7 +444,7 @@ msgstr "Ventas Edi "
 
 msgctxt "model:sale.sale-edi.sale,name:"
 msgid "SaleSale - EdiSale"
-msgstr ""
+msgstr "Venta - Venta EDI"
 
 msgctxt "selection:edi.sale,function_:"
 msgid "Cancel"
@@ -448,6 +466,18 @@ msgctxt "selection:edi.sale,function_:"
 msgid "Replazement"
 msgstr "Reemplazo"
 
+msgctxt "selection:edi.sale,sale_pricelist_from_edi:"
+msgid "No"
+msgstr "No"
+
+msgctxt "selection:edi.sale,sale_pricelist_from_edi:"
+msgid "Party"
+msgstr "Tercero"
+
+msgctxt "selection:edi.sale,sale_pricelist_from_edi:"
+msgid "Yes"
+msgstr "Si"
+
 msgctxt "selection:edi.sale,special_condition:"
 msgid "Entregar el pedido entero"
 msgstr "Entregar el pedido entero"
@@ -465,12 +495,12 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 msgctxt "selection:edi.sale,state:"
-msgid "Draft"
-msgstr "Borrador"
+msgid "Done"
+msgstr "Realizado"
 
 msgctxt "selection:edi.sale,state:"
-msgid "done"
-msgstr "Realizado"
+msgid "Draft"
+msgstr "Borrador"
 
 msgctxt "selection:edi.sale,type_:"
 msgid "Pedido consignacion"
@@ -657,16 +687,16 @@ msgid "Legal Supplier"
 msgstr "Proveedor legal"
 
 msgctxt "selection:edi.sale.party,type_:"
-msgid "NAD"
-msgstr "NAD"
-
-msgctxt "selection:edi.sale.party,type_:"
 msgid "Message Receiver"
 msgstr "Receptor del mensaje"
 
 msgctxt "selection:edi.sale.party,type_:"
 msgid "Message Sender"
 msgstr "Emisor del mensaje"
+
+msgctxt "selection:edi.sale.party,type_:"
+msgid "NAD"
+msgstr "NAD"
 
 msgctxt "selection:edi.sale.party,type_:"
 msgid "NADPE"
