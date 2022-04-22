@@ -468,9 +468,17 @@ class SaleEdi(ModelSQL, ModelView):
          'get_party', searcher='search_party')
     references = fields.One2Many('edi.sale.reference',
         'edi_sale', 'References', readonly=True)
-    state = fields.Selection([('draft', 'Draft'), ('done', 'done'),
-        ('cancel', 'Cancel')], 'State', readonly=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('done', 'Done'),
+        ('cancel', 'Cancel'),
+        ], 'State', readonly=True)
     sale = fields.One2One('sale.sale-edi.sale', 'edi_sale', 'sale', 'Sale')
+    sale_pricelist_from_edi = fields.Selection([
+        ('yes', 'Yes'),
+        ('no', 'No'),
+        ('party', 'Party'),
+        ], "Sale PriceList From EDI", sort=False)
 
     @classmethod
     def __setup__(cls):
@@ -494,6 +502,10 @@ class SaleEdi(ModelSQL, ModelView):
     @staticmethod
     def default_company():
         return Transaction().context.get('company')
+
+    @staticmethod
+    def default_sale_pricelist_from_edi():
+        return 'party'
 
     def get_party(self, name):
         if self.manual_party:
@@ -565,6 +577,9 @@ class SaleEdi(ModelSQL, ModelView):
         PartyEdi = pool.get('edi.sale.party')
         # Configuration = pool.get('stock.configuration')
 
+        default_values = SaleEdi.default_get(SaleEdi._fields.keys(),
+            with_rec_name=False)
+
         # config = Configuration(1)
         separator = '|'  # TODO config.separator
 
@@ -578,7 +593,7 @@ class SaleEdi(ModelSQL, ModelView):
             line = line.split(separator)
             msg_id = line.pop(0)
             if msg_id == 'ORD':
-                sale_edi = SaleEdi()
+                sale_edi = SaleEdi(**default_values)
                 sale_edi.read_ORD(line)
             elif 'FTX' in msg_id:
                 edi_sale_description = EdiSaleDescription()
@@ -697,7 +712,7 @@ class SaleEdi(ModelSQL, ModelView):
         to_save = []
         for esale in edi_sales:
             if esale.sale and esale.sale.state != 'cancel':
-                raise UserError(gettext('sale_edi.msg_no_cancel_sale',
+                raise UserError(gettext('sale_edi_ediversa.msg_no_cancel_sale',
                 number=esale.number))
             esale.state = 'cancel'
             to_save.append(esale)
@@ -718,7 +733,7 @@ class SaleEdi(ModelSQL, ModelView):
             if edi_sale.sale:
                 continue
             sale = Sale(**default_values)
-            sale.date = edi_sale.document_date
+            sale.sale_date = edi_sale.document_date
             sale.party = edi_sale.party
             sale.on_change_party()
             sale.reference = edi_sale.number
@@ -741,13 +756,30 @@ class SaleEdi(ModelSQL, ModelView):
             with Transaction().set_context(price_list=price_list):
                 for eline in edi_sale.lines:
                     if not eline.product:
-                        raise UserError(gettext('sale_edi.msg_no_product',
-                                code=eline.code))
+                        raise UserError(gettext('sale_edi_ediversa.msg_no_product',
+                                code=eline.code or ''))
+                    if not eline.product.salable:
+                        raise UserError(gettext('sale_edi_ediversa.msg_no_product_salable',
+                                code=eline.code or ''))
                     line = Line()
                     line.product = eline.product
                     line.on_change_product()
                     line.quantity = eline.quantity
                     line.on_change_quantity()
+
+                    if edi_sale.sale_pricelist_from_edi == 'yes':
+                        pricelist_from_edi = True
+                    elif edi_sale.sale_pricelist_from_edi == 'party':
+                        pricelist_from_edi = edi_sale.party.sale_pricelist_from_edi
+                    else:
+                        pricelist_from_edi = False
+
+                    if pricelist_from_edi:
+                        if hasattr(line, 'gross_unit_price'):
+                            line.gross_unit_price = eline.unit_price
+                            line.on_change_gross_unit_price()
+                        else:
+                            line.unit_price = eline.unit_price
                     sale.lines += (line,)
             sale.is_edi = True
             sale.origin = str(edi_sale)
@@ -757,6 +789,15 @@ class SaleEdi(ModelSQL, ModelView):
             to_done.append(edi_sale)
         Sale.save(to_save)
         cls.save(to_done)
+
+    @classmethod
+    def copy(cls, edi_sales, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('state', 'draft')
+        return super(SaleEdi, cls).copy(edi_sales, default=default)
 
 
 class Sale(metaclass=PoolMeta):
