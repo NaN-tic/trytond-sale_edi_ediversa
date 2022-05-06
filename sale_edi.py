@@ -463,8 +463,16 @@ class SaleEdi(ModelSQL, ModelView):
     gross_amount = fields.Numeric('Gross Amount', digits=(16, 2),
         readonly=True)
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
-    manual_party = fields.Many2One('party.party', 'Manual Party')
-    party = fields.Function(fields.Many2One('party.party', 'Party'),
+    manual_party = fields.Many2One('party.party', 'Manual Party',
+        context={
+            'company': Eval('company'),
+            },
+        depends=['company'])
+    party = fields.Function(fields.Many2One('party.party', 'Party',
+            context={
+                'company': Eval('company'),
+            },
+            depends=['company']),
          'get_party', searcher='search_party')
     references = fields.One2Many('edi.sale.reference',
         'edi_sale', 'References', readonly=True)

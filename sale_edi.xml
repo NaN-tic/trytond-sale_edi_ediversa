@@ -161,6 +161,17 @@
           <field name="group" ref="sale.group_sale_admin"/>
       </record>
 
+      <record model="ir.rule.group" id="rule_group_edi_sale">
+            <field name="name">User in company</field>
+            <field name="model" search="[('model', '=', 'edi.sale')]"/>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_edi_sale">
+            <field name="domain"
+                eval="[('company', 'in', Eval('companies', []))]"
+                pyson="1"/>
+            <field name="rule_group" ref="rule_group_edi_sale"/>
+        </record>
 
 
 
