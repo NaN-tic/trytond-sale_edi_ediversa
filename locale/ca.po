@@ -634,6 +634,10 @@ msgctxt "selection:edi.sale.line.pialin,type:"
 msgid "Supplier Code"
 msgstr "Codi proveïdor"
 
+msgctxt "selection:edi.sale.line.pialin,type:"
+msgid "Purchase Part Number"
+msgstr "Número de part del comprador"
+
 msgctxt "selection:edi.sale.line.quantity,conditions:"
 msgid "Invoice but not send"
 msgstr "Facturar però no enviar"

@@ -209,7 +209,8 @@ class PIALIN(ModelSQL, ModelView):
             ('IN', 'Purchaser Code'), ('SN', 'Serial Number'),
             ('NB', 'Lot Number'), ('EN', 'Expedition'),
             ('GB', 'Internal Group'), ('MF', 'Manufacturer Code'),
-            ('UA', 'Purchaser Code'), ('CNA', 'National Code')
+            ('UA', 'Purchaser Code'), ('CNA', 'National Code'),
+            ('BP', 'Purchase Part Number')
             ], 'Type', readonly=True)
     code = fields.Char('Code', readonly=True)
     qualifier = fields.Selection([
