@@ -9,6 +9,7 @@ from . import party
 def register():
     Pool.register(
         party.Party,
+        party.Address,
         sale_edi.Cron,
         sale_edi.EdiSaleReference,
         sale_edi.EdiSaleSale,

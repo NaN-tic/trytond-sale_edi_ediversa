@@ -136,6 +136,14 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
         if message:
             self.vat = message.pop(0)
 
+    def read_NADUD(self, message):
+        #TODO:
+        '''
+        Camps a buscar: cliente final, nombre, dirección, población, cp,
+            cheque, reserva, provicia
+        '''
+        pass
+
 
 class SaleDescription(ModelSQL, ModelView):
     'Sale Description'
@@ -584,6 +592,7 @@ class SaleEdi(ModelSQL, ModelView):
         SaleEdi = pool.get('edi.sale')
         SaleLineEdi = pool.get('edi.sale.line')
         PartyEdi = pool.get('edi.sale.party')
+        Address = pool.get('party.address')
         # Configuration = pool.get('stock.configuration')
 
         default_values = SaleEdi.default_get(SaleEdi._fields.keys(),
@@ -597,6 +606,7 @@ class SaleEdi(ModelSQL, ModelView):
         document_type = data.pop(0).replace('\n', '').replace('\r', '')
         if document_type != 'ORDERS_D_96A_UN_EAN008':
             return
+        addresses_to_save = []
         for line in data:
             line = line.replace('\n', '').replace('\r', '')
             line = line.split(separator)
@@ -639,6 +649,9 @@ class SaleEdi(ModelSQL, ModelView):
                 if not getattr(sale_edi, 'parties', False):
                     sale_edi.parties = []
                 sale_edi.parties += (party,)
+                if party.address:
+                    party.address.last_edi_party = party
+                    addresses_to_save.append(party.address)
             elif 'NAD' in msg_id:
                 continue
             else:
@@ -647,6 +660,7 @@ class SaleEdi(ModelSQL, ModelView):
         # look for reference for last line
         if sale_line:
             sale_line.search_related()
+        Address.save(addresses_to_save)
         return sale_edi
 
     def add_attachment(self, attachment, filename=None):

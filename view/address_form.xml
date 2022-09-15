@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/group[@id='edi']/field[@name='edi_ean']" position="after">
+        <label name="last_edi_party"/>
+        <field name="last_edi_party"/>
+        <newline/>
+        <label name="type_"/>
+        <field name="type_"/>
+        <label name="edi_code"/>
+        <field name="edi_code"/>
+        <label name="commercial_register"/>
+        <field name="commercial_register"/>
+        <label name="country_code"/>
+        <field name="country_code"/>
+    </xpath>
+</data>
