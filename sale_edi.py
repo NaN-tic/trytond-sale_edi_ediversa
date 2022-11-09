@@ -841,6 +841,6 @@ class EdiSaleSale(ModelSQL):
     __name__ = 'sale.sale-edi.sale'
 
     sale = fields.Many2One('sale.sale', 'Sale', required=True,
-        ondelete='RESTRICT', select=True)
+        ondelete='RESTRICT')
     edi_sale = fields.Many2One('edi.sale', 'EdiSale', required=True,
-        ondelete='RESTRICT', select=True)
+        ondelete='RESTRICT')
