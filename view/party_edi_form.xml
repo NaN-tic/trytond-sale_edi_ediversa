@@ -24,4 +24,6 @@ this repository contains the full copyright notices and license terms. -->
   <field name="country_code"/>
   <label name="section"/>
   <field name="section"/>
+  <label name="cip"/>
+  <field name="cip"/>
 </form>
