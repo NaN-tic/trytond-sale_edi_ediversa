@@ -72,7 +72,7 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
         self.type_ = 'NADSU'
         self.edi_code = message.pop(0) if message else ''
         if message:
-            message.pop(0)
+            self.cip = message.pop(0)
         self.name = message.pop(0) if message else ''
         if message:
             self.street = message.pop(0)
@@ -82,6 +82,20 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
             self.zip = message.pop(0)
         if message:
             self.vat = message.pop(0)
+        if message:
+            text = message.pop(0)
+            if not self.cip and text:
+                self.cip = text
+        if message:
+            message.pop(0)
+        if message:
+            message.pop(0)
+        if message:
+            message.pop(0)
+        if message:
+            text = message.pop(0)
+            if not self.cip and text:
+                self.cip = text
 
     def read_NADBY(self, message):
         self.type_ = 'NADBY'
@@ -172,7 +186,7 @@ class EdiSaleReference(ModelSQL, ModelView):
         ('AN', 'Shipment Number'),
         ('F', 'Shipment Date'), ],
         'Reference Code', readonly=True)
-    reference = fields.Char('Reference',  readonly=True)
+    reference = fields.Char('Reference', readonly=True)
     reference_date = fields.Date('Reference Date', readonly=True)
     origin = fields.Reference('Reference', selection='get_resource')
     line = fields.Many2One('edi.sale.line', 'Line', readonly=True)
@@ -670,12 +684,12 @@ class SaleEdi(ModelSQL, ModelView):
         Configuration = pool.get('sale.configuration')
 
         configuration = Configuration(1)
-        source_path = os.path.abspath(configuration.inbox_path_edi or
-             DEFAULT_FILES_LOCATION)
+        source_path = os.path.abspath(configuration.inbox_path_edi
+            or DEFAULT_FILES_LOCATION)
 
         files = [os.path.join(source_path, fp) for fp in
-                 os.listdir(source_path) if os.path.isfile(os.path.join(
-                     source_path, fp))]
+            os.listdir(source_path) if os.path.isfile(os.path.join(
+                    source_path, fp))]
         files_to_delete = []
         to_save = []
         attachments = dict()
@@ -767,10 +781,12 @@ class SaleEdi(ModelSQL, ModelView):
             with Transaction().set_context(price_list=price_list):
                 for eline in edi_sale.lines:
                     if not eline.product:
-                        raise UserError(gettext('sale_edi_ediversa.msg_no_product',
+                        raise UserError(
+                            gettext('sale_edi_ediversa.msg_no_product',
                                 code=eline.code or ''))
                     if not eline.product.salable:
-                        raise UserError(gettext('sale_edi_ediversa.msg_no_product_salable',
+                        raise UserError(
+                            gettext('sale_edi_ediversa.msg_no_product_salable',
                                 code=eline.code or ''))
                     line = Line()
                     line.product = eline.product
@@ -781,7 +797,8 @@ class SaleEdi(ModelSQL, ModelView):
                     if edi_sale.sale_pricelist_from_edi == 'yes':
                         pricelist_from_edi = True
                     elif edi_sale.sale_pricelist_from_edi == 'party':
-                        pricelist_from_edi = edi_sale.party.sale_pricelist_from_edi
+                        pricelist_from_edi = (
+                            edi_sale.party.sale_pricelist_from_edi)
                     else:
                         pricelist_from_edi = False
 

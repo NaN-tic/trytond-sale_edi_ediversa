@@ -294,6 +294,14 @@ msgctxt "field:edi.sale.party,zip:"
 msgid "zip"
 msgstr "Codi postal"
 
+msgctxt "field:edi.sale.party,section:"
+msgid "Section"
+msgstr "Secció"
+
+msgctxt "field:edi.sale.party,cip:"
+msgid "CIP"
+msgstr "CIP"
+
 msgctxt "field:edi.sale.reference,edi_sale:"
 msgid "Sale"
 msgstr "Venda"
@@ -357,6 +365,10 @@ msgstr "EDI Venda"
 msgctxt "field:sale.sale-edi.sale,sale:"
 msgid "Sale"
 msgstr "Venda"
+
+msgctxt "help:edi.sale.party,cip:"
+msgid "Supplier's internal code, assigned by the buyer"
+msgstr "Codi intern del proveïdor, assignat pel comprador"
 
 msgctxt "model:edi.sale,name:"
 msgid "Edi Sale"
