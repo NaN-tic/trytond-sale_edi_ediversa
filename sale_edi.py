@@ -101,7 +101,7 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
         self.type_ = 'NADBY'
         self.edi_code = message.pop(0) if message else ''
         if message:
-            message.pop(0)
+            self.section = message.pop(0)
         if message:
             message.pop(0)
         if message:
@@ -115,8 +115,6 @@ class PartyEdi(SupplierEdiMixin, ModelSQL, ModelView):
             self.zip = message.pop(0)
         if message:
             self.vat = message.pop(0)
-        if message:
-            self.section = message.pop(0)
 
     def read_NADDP(self, message):
         self.type_ = 'NADDP'
