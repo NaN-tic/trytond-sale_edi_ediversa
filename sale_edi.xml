@@ -3,7 +3,6 @@
      copyright notices and license terms. -->
 <tryton>
     <data>
-
       <record model="ir.ui.view" id="edi_sale_view_form">
           <field name="model">edi.sale</field>
           <field name="type">form</field>
@@ -82,36 +81,41 @@
               id="menu_edi_sales"
               sequence="0" icon="tryton-list"/>
 
-      <record model="ir.action.act_window.view" id="act_edi_sales_form_view1">
-          <field name="sequence" eval="10"/>
-          <field name="view" ref="edi_sale_view_tree"/>
-          <field name="act_window" ref="act_edi_sale_form"/>
-      </record>
-      <record model="ir.action.act_window.view" id="act_edi_sale_form_view2">
-          <field name="sequence" eval="20"/>
-          <field name="view" ref="edi_sale_view_form"/>
-          <field name="act_window" ref="act_edi_sale_form"/>
-      </record>
+    <record model="ir.action.act_window.view" id="act_edi_sales_form_view1">
+        <field name="sequence" eval="10"/>
+        <field name="view" ref="edi_sale_view_tree"/>
+        <field name="act_window" ref="act_edi_sale_form"/>
+    </record>
+    <record model="ir.action.act_window.view" id="act_edi_sale_form_view2">
+        <field name="sequence" eval="20"/>
+        <field name="view" ref="edi_sale_view_form"/>
+        <field name="act_window" ref="act_edi_sale_form"/>
+    </record>
 
-        <record model="ir.action.act_window.domain" id="act_sale_edi_domain_draft">
+    <record model="ir.action.act_window.domain" id="act_sale_edi_domain_draft">
         <field name="name">Draft</field>
         <field name="sequence" eval="10"/>
         <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
         <field name="act_window" ref="act_edi_sale_form"/>
-      </record>
-
-      <record model="ir.action.act_window.domain" id="act_sale_edi_domain_done">
+    </record>
+    <record model="ir.action.act_window.domain" id="act_sale_edi_domain_done">
         <field name="name">Done</field>
         <field name="sequence" eval="10"/>
         <field name="domain" eval="[('state', '=', 'done')]" pyson="1"/>
         <field name="act_window" ref="act_edi_sale_form"/>
-      </record>
-      <record model="ir.action.act_window.domain" id="act_sale_edi_domain_cancel">
+    </record>
+    <record model="ir.action.act_window.domain" id="act_sale_edi_domain_cancel">
         <field name="name">Cancel</field>
         <field name="sequence" eval="10"/>
         <field name="domain" eval="[('state', '=', 'cancel')]" pyson="1"/>
         <field name="act_window" ref="act_edi_sale_form"/>
-      </record>
+    </record>
+    <record model="ir.action.act_window.domain" id="act_sale_edi_domain_wo_sale">
+        <field name="name">Without Sale</field>
+        <field name="sequence" eval="10"/>
+        <field name="domain" eval="[('sale', '=', None)]" pyson="1"/>
+        <field name="act_window" ref="act_edi_sale_form"/>
+    </record>
 
       <record model="ir.ui.view" id="sale_configuration_view_form">
           <field name="model">sale.configuration</field>
@@ -173,7 +177,10 @@
             <field name="rule_group" ref="rule_group_edi_sale"/>
         </record>
 
-
-
+        <record model="ir.ui.view" id="sale_view_form">
+            <field name="model">sale.sale</field>
+            <field name="inherit" ref="sale.sale_view_form"/>
+            <field name="name">sale_form</field>
+        </record>
     </data>
 </tryton>
