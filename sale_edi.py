@@ -319,7 +319,7 @@ class SaleEdiLine(ModelSQL, ModelView):
     quantity = fields.Function(fields.Float('Quantity', digits=(16, 4)),
          'get_sale_quantity')
     sale_line = fields.Many2One('sale.line', 'sale Line', readonly=True,
-        ondelete='RESTRICT', select=True)
+        ondelete='RESTRICT')
 
     def get_sale_quantity(self, name=None):
         for q in self.quantities:
