@@ -410,6 +410,10 @@ msgctxt "model:ir.action,name:act_edi_sale_form"
 msgid "Edi Sales"
 msgstr "Venda EDI"
 
+msgctxt "model:ir.action.act_window.domain,name:act_sale_edi_domain_wo_sale"
+msgid "Without Sale"
+msgstr "Sense venda"
+
 msgctxt "model:ir.action.act_window.domain,name:act_sale_edi_domain_cancel"
 msgid "Cancel"
 msgstr "Cancel·lat"
@@ -437,6 +441,22 @@ msgid "Cannot confirm sale without product \"%(code)s\" is salable."
 msgstr ""
 "No es pot confirmar la venda sense que el producte \"%(code)s\" sigui "
 "vendible."
+
+msgctxt "model:ir.message,text:msg_to_many_sales"
+msgid "There are to many sales related to this EDI sale: %(sales)s"
+msgstr "Hi ha masses vendes relacionades a aquesta venda EDI: %(sales)s"
+
+msgctxt "model:ir.message,text:msg_cancel_sale_edi_ediversa"
+msgid "The EDI sales \"%(edi_sales)s\" will be cancelled."
+msgstr "La venda EDI \"%(edi_sales)s\" serà cancel·lada."
+
+msgctxt "model:ir.message,text:msg_edi_sale_with_sale"
+msgid ""
+"The EDI sale %(edi_sale)s selected already has a sale (%(sale)s) related. "
+"That's not correct, must be unic."
+msgstr ""
+"La venda EDI %(edi_sale)s seleccionada ja té una venda (%(sale)s) "
+"relacionada. I només en pot tenir una."
 
 msgctxt "model:ir.model.button,string:cancel_sale_button"
 msgid "Cancel Sales"

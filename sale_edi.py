@@ -4,13 +4,16 @@ import os
 from datetime import datetime
 from decimal import Decimal
 
-from trytond.model import fields, ModelSQL, ModelView
+from trytond.model import fields, ModelSQL, ModelView, Workflow
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
-from trytond.exceptions import UserError
+from trytond.exceptions import UserError, UserWarning
 from trytond.pyson import Eval
+from sql import Cast
+from sql.functions import Substring
 from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
+from trytond.modules.company.model import reset_employee
 
 DEFAULT_FILES_LOCATION = '/tmp/'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -315,7 +318,8 @@ class SaleEdiLine(ModelSQL, ModelView):
     product = fields.Many2One('product.product', 'Product')
     quantity = fields.Function(fields.Float('Quantity', digits=(16, 4)),
          'get_sale_quantity')
-    sale_line = fields.Many2One('sale.line', 'sale Line', readonly=True)
+    sale_line = fields.Many2One('sale.line', 'sale Line', readonly=True,
+        ondelete='RESTRICT', select=True)
 
     def get_sale_quantity(self, name=None):
         for q in self.quantities:
@@ -496,7 +500,8 @@ class SaleEdi(ModelSQL, ModelView):
         ('done', 'Done'),
         ('cancel', 'Cancel'),
         ], 'State', readonly=True)
-    sale = fields.One2One('sale.sale-edi.sale', 'edi_sale', 'sale', 'Sale')
+    sale = fields.Function(fields.Many2One('sale.sale', 'Sale'),
+        'get_sale', searcher='search_sale')
     sale_pricelist_from_edi = fields.Selection([
         ('yes', 'Yes'),
         ('no', 'No'),
@@ -542,6 +547,44 @@ class SaleEdi(ModelSQL, ModelView):
         return ['OR', ('manual_party', ) + tuple(clause[1:]),
                 [('parties.type_', '=', 'NADBY'),
                     ('parties.party', ) + tuple(clause[1:])]]
+
+    def get_sale(self, name=None):
+        pool = Pool()
+        Sale = pool.get('sale.sale')
+
+        sales = Sale.search([
+                ('origin', '=', self),
+                ])
+        if not sales:
+            return
+        elif len(sales) == 1:
+            return sales[0].id
+        else:
+            raise UserError(gettext('sale_edi_ediversa.msg_to_many_sales',
+                    sales=", ".join(s.number or s.id for s in sales)))
+
+    @classmethod
+    def search_sale(cls, name, clause):
+        pool = Pool()
+        Sale = pool.get('sale.sale')
+        table = cls.__table__()
+        sale = Sale.__table__()
+
+        _, operator, value = clause
+        if not value:
+            # Without sales
+            sql_where = sale.origin == None
+        else:
+            # By the moment it's not needed this control, becasue the field is
+            # not searchable directly, only for the tab. But if in some place
+            # try to search not rise an error.
+            Operator = fields.SQL_OPERATORS[operator]
+            sql_where = Operator(sale.number, value)
+        query = table.join(sale, 'LEFT',
+            condition=(sale.origin.like('edi.sale,%')
+                & (table.id == Cast(Substring(sale.origin, 10), 'INTEGER')))
+                ).select(table.id, where=sql_where)
+        return [('id', 'in', query)]
 
     def read_ORD(self, message):
         self.number = message.pop(0)
@@ -829,8 +872,11 @@ class SaleEdi(ModelSQL, ModelView):
 class Sale(metaclass=PoolMeta):
     __name__ = 'sale.sale'
 
-    edi_sale = fields.One2One('sale.sale-edi.sale', 'sale', 'edi_sale', 'Sale')
-    is_edi = fields.Boolean('Is Edi', readonly=True)
+    is_edi = fields.Boolean('Is Edi',
+        states={
+            'readonly': Eval('state') != 'draft',
+            },
+        depends=['state'])
 
     @classmethod
     def __register__(cls, module_name):
@@ -855,12 +901,83 @@ class Sale(metaclass=PoolMeta):
         res = super().get_origin()
         return res + [('edi.sale', 'Edi Sale')]
 
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('cancelled')
+    def cancel(cls, sales):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
 
-class EdiSaleSale(ModelSQL):
-    'SaleSale - EdiSale'
-    __name__ = 'sale.sale-edi.sale'
+        edi_sales = []
+        for sale in sales:
+            if isinstance(sale.origin, EdiSale):
+                sale.origin.state = 'cancel'
+                edi_sales.append(sale.origin)
+        EdiSale.save(edi_sales)
+        super().cancel(sales)
 
-    sale = fields.Many2One('sale.sale', 'Sale', required=True,
-        ondelete='RESTRICT', select=True)
-    edi_sale = fields.Many2One('edi.sale', 'EdiSale', required=True,
-        ondelete='RESTRICT', select=True)
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('draft')
+    @reset_employee('quoted_by', 'confirmed_by')
+    def draft(cls, sales):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        edi_sales = []
+        for sale in sales:
+            if isinstance(sale.origin, EdiSale):
+                sale.origin.state = 'done'
+                edi_sales.append(sale.origin)
+        EdiSale.save(edi_sales)
+        super().draft(sales)
+
+    @classmethod
+    def write(cls, *args):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+        Warning = pool.get('res.user.warning')
+
+        actions = iter(args)
+        for sales, values in zip(actions, actions):
+            if 'origin' in values:
+                if (values.get('origin')
+                        and values['origin'].startswith('edi.sale')):
+                    values['is_edi'] = True
+                    edi_sale = EdiSale(int(values['origin'].split(',')[1]))
+                    edi_sale.state = 'done'
+                    edi_sale.save()
+                    if not edi_sale.sale:
+                        continue
+                    raise UserError(
+                        gettext('sale_edi_ediversa.msg_edi_sale_with_sale',
+                            edi_sale=edi_sale.number,
+                            sale=(edi_sale.sale.number
+                                or edi_sale.sale.reference
+                                or edi_sale.sale.id)))
+                elif not values.get('origin'):
+                    edi_sales = [sale.origin for sale in sales
+                            if sale.origin
+                            and sale.origin.__name__ == 'edi.sale']
+                    numbers = ", ".join([
+                            edi_sale.number for edi_sale in edi_sales])
+                    if edi_sales:
+                        key = 'clean_origin_sale_%s' % sales[0].id
+                        if Warning.check(key):
+                            raise UserWarning(key,
+                                gettext('sale_edi_ediversa.'
+                                    'msg_cancel_sale_edi_ediversa',
+                                    edi_sales=numbers))
+                        values['is_edi'] = False
+                        EdiSale.write(edi_sales, {'state': 'cancel'})
+        super().write(*args)
+
+    @fields.depends('origin', 'is_edi')
+    def on_change_origin(self):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        if not self.origin and self.is_edi:
+            self.is_edi = False
+        elif isinstance(self.origin, EdiSale) and hasattr(self.origin, 'sale'):
+            self.is_edi = True
