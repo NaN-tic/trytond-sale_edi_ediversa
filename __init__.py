@@ -11,7 +11,6 @@ def register():
         party.Party,
         sale_edi.Cron,
         sale_edi.EdiSaleReference,
-        sale_edi.EdiSaleSale,
         sale_edi.PartyEdi,
         sale_edi.PIALIN,
         sale_edi.Sale,
