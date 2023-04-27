@@ -30,7 +30,7 @@ msgctxt "field:edi.sale,document_date:"
 msgid "Document Date"
 msgstr "Fecha documento"
 
-msgctxt "field:edi.sale,first_deliver_date:"
+msgctxt "field:edi.sale,first_delivery_date:"
 msgid "First Delivery Date"
 msgstr "Primera fecha de envio"
 
@@ -42,7 +42,7 @@ msgctxt "field:edi.sale,gross_amount:"
 msgid "Gross Amount"
 msgstr "Importe"
 
-msgctxt "field:edi.sale,last_deliver_date:"
+msgctxt "field:edi.sale,last_delivery_date:"
 msgid "Last Delivery Date"
 msgstr "Última fecha de entrega"
 
