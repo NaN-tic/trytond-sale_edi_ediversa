@@ -847,7 +847,6 @@ class SaleEdi(ModelSQL, ModelView):
                     sale.lines += (line,)
             sale.is_edi = True
             sale.origin = str(edi_sale)
-            sale.edi_sale = edi_sale
             to_save.append(sale)
             edi_sale.state = 'done'
             to_done.append(edi_sale)
