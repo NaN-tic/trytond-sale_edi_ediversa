@@ -30,10 +30,10 @@
     <field name="document_date"/>
     <label name="delivery_date"/>
     <field name="delivery_date"/>
-    <label name="first_deliver_date"/>
-    <field name="first_deliver_date"/>
-    <label name="last_deliver_date"/>
-    <field name="last_deliver_date"/>
+    <label name="first_delivery_date"/>
+    <field name="first_delivery_date"/>
+    <label name="last_delivery_date"/>
+    <field name="last_delivery_date"/>
     <label name="company"/>
     <field name="company"/>
     <newline/>

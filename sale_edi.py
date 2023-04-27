@@ -464,8 +464,8 @@ class SaleEdi(ModelSQL, ModelView):
         'Function Type', readonly=True)
     document_date = fields.Date('Document Date', readonly=True)
     delivery_date = fields.Date('Delivery Date', readonly=True)
-    first_deliver_date = fields.Date('First Delivery Date', readonly=True)
-    last_deliver_date = fields.Date('Last Delivery Date', readonly=True)
+    first_delivery_date = fields.Date('First Delivery Date', readonly=True)
+    last_delivery_date = fields.Date('Last Delivery Date', readonly=True)
     special_condition = fields.Selection([
         (None, ''),
         ('81E', 'Facturar pero no reabastecer'),
