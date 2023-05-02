@@ -616,10 +616,26 @@ class SaleEdi(ModelSQL, ModelView):
         # Not implemented
         pass
 
+    def read_PAT(self, message):
+        # Not implemented
+        pass
+
     def read_RFF(self, message):
         pass
 
     def read_CNTRES(self, message):
+        # Not implemented
+        pass
+
+    def read_TDT(self, message):
+        # Not implemented
+        pass
+
+    def read_TOD(self, message):
+        # Not implemented
+        pass
+
+    def read_ALC(self, message):
         # Not implemented
         pass
 
