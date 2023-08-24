@@ -1,6 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 import os
+import logging
 from datetime import datetime
 from decimal import Decimal
 
@@ -20,6 +21,7 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
 
+logger = logging.getLogger(__name__)
 
 def to_date(value):
     if value is None or value == '':
@@ -739,9 +741,14 @@ class SaleEdi(ModelSQL, ModelView):
         source_path = os.path.abspath(configuration.inbox_path_edi
             or DEFAULT_FILES_LOCATION)
 
-        files = [os.path.join(source_path, fp) for fp in
-            os.listdir(source_path) if os.path.isfile(os.path.join(
-                    source_path, fp))]
+        try:
+            files = [os.path.join(source_path, fp) for fp in
+                os.listdir(source_path) if os.path.isfile(os.path.join(
+                        source_path, fp))]
+        except OSError:
+            logger.error('OSError in %s.' % (source_path))
+            return
+
         files_to_delete = []
         to_save = []
         attachments = dict()
