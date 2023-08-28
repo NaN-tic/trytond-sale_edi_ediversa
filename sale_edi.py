@@ -748,6 +748,9 @@ class SaleEdi(ModelSQL, ModelView):
         except OSError:
             logger.error('OSError in %s.' % (source_path))
             return
+        except BlockingIOError:
+            logger.error('BlockingIOError in %s.' % (source_path))
+            return
 
         files_to_delete = []
         to_save = []
