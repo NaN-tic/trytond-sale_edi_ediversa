@@ -858,7 +858,7 @@ class SaleEdi(ModelSQL, ModelView):
 
                     if edi_sale.sale_pricelist_from_edi == 'yes':
                         pricelist_from_edi = True
-                    elif edi_sale.sale_pricelist_from_edi == 'party':
+                    elif edi_sale.sale_pricelist_from_edi == 'party' and edi_sale.party:
                         pricelist_from_edi = (
                             edi_sale.party.sale_pricelist_from_edi)
                     else:
