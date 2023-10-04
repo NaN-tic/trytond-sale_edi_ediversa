@@ -2,6 +2,7 @@
 # copyright notices and license terms.
 import os
 import logging
+import time
 from datetime import datetime
 from decimal import Decimal
 
@@ -11,10 +12,13 @@ from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError, UserWarning
 from trytond.pyson import Eval
+from trytond.config import config as config_
 from sql import Cast
 from sql.functions import Substring
 from trytond.modules.party_edi.party import SUPPLIER_TYPE, SupplierEdiMixin
 from trytond.modules.company.model import reset_employee
+
+retry = config_.getint('edi', 'retry', default=5)
 
 DEFAULT_FILES_LOCATION = '/tmp/'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -758,9 +762,17 @@ class SaleEdi(ModelSQL, ModelView):
         for fname in files:
             if fname[-4:].lower() not in KNOWN_EXTENSIONS:
                 continue
-            with open(fname, 'r', encoding='latin-1') as fp:
-                data = fp.readlines()
-                sale_edi = cls.import_edi_file([], data)
+            for count in range(retry, -1, -1):
+                if count != retry:
+                    time.sleep(0.02 * (retry - count))
+                try:
+                    with open(fname, 'r', encoding='latin-1') as fp:
+                        data = fp.readlines()
+                        sale_edi = cls.import_edi_file([], data)
+                except Exception:
+                    logger.error('fail to import edi file', exc_info=True)
+                    return
+                break
 
             basename = os.path.basename(fname)
             if sale_edi:
