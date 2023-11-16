@@ -486,12 +486,12 @@ class SaleEdi(ModelSQL, ModelView):
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
     manual_party = fields.Many2One('party.party', 'Manual Party',
         context={
-            'company': Eval('company'),
+            'company': Eval('company', -1),
             },
         depends=['company'])
     party = fields.Function(fields.Many2One('party.party', 'Party',
             context={
-                'company': Eval('company'),
+                'company': Eval('company', -1),
             },
             depends=['company']),
          'get_party', searcher='search_party')
