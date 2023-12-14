@@ -448,47 +448,49 @@ class SaleEdi(ModelSQL, ModelView):
     'Edi Sale'
     __name__ = 'edi.sale'
 
+    _states = {
+        'readonly': Eval('state') != 'draft',
+        }
+
     company = fields.Many2One('company.company', 'Company', readonly=True)
     number = fields.Char('Number', readonly=True)
     type_ = fields.Selection([
-        (None, ''),
-        ('220', 'Pedido normal'),
-        ('226', 'Pedido parcial que cancela un pedido abierto'),
-        ('227', 'Pedido consignacion')],
-        'Document Type', readonly=True)
+            (None, ''),
+            ('220', 'Pedido normal'),
+            ('226', 'Pedido parcial que cancela un pedido abierto'),
+            ('227', 'Pedido consignacion'),
+            ], 'Document Type', readonly=True)
     function_ = fields.Selection([
-        (None, ''),
-        ('9', 'Original'),
-        ('1', 'Cancel'),
-        ('4', 'Modify'),
-        ('5', 'Replazement'),
-        ('31', 'Copy')],
-        'Function Type', readonly=True)
+            (None, ''),
+            ('9', 'Original'),
+            ('1', 'Cancel'),
+            ('4', 'Modify'),
+            ('5', 'Replazement'),
+            ('31', 'Copy')], 'Function Type', readonly=True)
     document_date = fields.Date('Document Date', readonly=True)
     delivery_date = fields.Date('Delivery Date', readonly=True)
     first_delivery_date = fields.Date('First Delivery Date', readonly=True)
     last_delivery_date = fields.Date('Last Delivery Date', readonly=True)
     special_condition = fields.Selection([
-        (None, ''),
-        ('81E', 'Facturar pero no reabastecer'),
-        ('82E', 'Enviar pero no facturar'),
-        ('83E', 'Entregar el pedido entero')], 'Special Condition',
-        readonly=True)
+            (None, ''),
+            ('81E', 'Facturar pero no reabastecer'),
+            ('82E', 'Enviar pero no facturar'),
+            ('83E', 'Entregar el pedido entero'),
+            ], 'Special Condition', readonly=True)
     descriptions = fields.One2Many('edi.sale.description', 'sale',
         'Description', readonly=True)
     parties = fields.One2Many('edi.sale.party', 'edi_sale', 'Parties',
         readonly=True)
     currency_code = fields.Char('Currency', readonly=True)
-    currency = fields.Many2One('currency.currency', 'Currency')
-    lines = fields.One2Many('edi.sale.line', 'edi_sale', 'Lines')
+    currency = fields.Many2One('currency.currency', 'Currency', states=_states)
+    lines = fields.One2Many('edi.sale.line', 'edi_sale', 'Lines', states=_states)
     gross_amount = fields.Numeric('Gross Amount', digits=(16, 2),
         readonly=True)
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
     manual_party = fields.Many2One('party.party', 'Manual Party',
         context={
             'company': Eval('company', -1),
-            },
-        depends=['company'])
+            }, states=_states, depends=['company'])
     party = fields.Function(fields.Many2One('party.party', 'Party',
             context={
                 'company': Eval('company', -1),
@@ -498,17 +500,17 @@ class SaleEdi(ModelSQL, ModelView):
     references = fields.One2Many('edi.sale.reference',
         'edi_sale', 'References', readonly=True)
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('done', 'Done'),
-        ('cancel', 'Cancel'),
-        ], 'State', readonly=True)
+            ('draft', 'Draft'),
+            ('done', 'Done'),
+            ('cancel', 'Cancel'),
+            ], 'State', readonly=True)
     sale = fields.Function(fields.Many2One('sale.sale', 'Sale'),
         'get_sale', searcher='search_sale')
     sale_pricelist_from_edi = fields.Selection([
-        ('yes', 'Yes'),
-        ('no', 'No'),
-        ('party', 'Party'),
-        ], "Sale PriceList From EDI", sort=False)
+            ('yes', 'Yes'),
+            ('no', 'No'),
+            ('party', 'Party'),
+            ], "Sale PriceList From EDI", sort=False, states=_states)
 
     @classmethod
     def __setup__(cls):
