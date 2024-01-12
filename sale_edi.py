@@ -897,8 +897,7 @@ class Sale(metaclass=PoolMeta):
     is_edi = fields.Boolean('Is Edi',
         states={
             'readonly': Eval('state') != 'draft',
-            },
-        depends=['state'])
+            })
 
     @classmethod
     def __register__(cls, module_name):
