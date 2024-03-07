@@ -30,7 +30,7 @@ def to_date(value):
         value = value[0:8]
     if value == '00000000':
         return
-    return datetime.strptime(value, DATE_FORMAT)
+    return datetime.strptime(value, DATE_FORMAT).date()
 
 
 def to_decimal(value, digits=2):
@@ -826,7 +826,8 @@ class SaleEdi(ModelSQL, ModelView):
                     sale.invoice_party = party.party
                     sale.on_change_invoice_party()
                     sale.invoice_address = (party.address if party.address else
-                        party.party.addresses[0])
+                        party.party and party.party.addresses
+                        and party.party.addresses[0] or None)
                 elif party.type_ == 'NADDP':
                     sale.shipment_party = party.party
                     sale.on_change_shipment_party()
