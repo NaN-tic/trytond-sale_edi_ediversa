@@ -442,6 +442,10 @@ msgstr ""
 "No es puede confirmar la venta sin que el producto \"%(code)s\" sea "
 "vendible."
 
+msgctxt "model:ir.message,text:msg_to_many_sales"
+msgid "There are to many sales related to this EDI sale: %(sales)s"
+msgstr "Hay más de una venta relcaionada con esta venta EDI: %(sales)s"
+
 msgctxt "model:ir.message,text:msg_cancel_sale_edi_ediversa"
 msgid "The EDI sales \"%(edi_sales)s\" will be cancelled."
 msgstr "La venta EDI \"%(edi_sales)s\" sersá cancelada."
