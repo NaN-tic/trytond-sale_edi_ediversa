@@ -30,7 +30,7 @@ def to_date(value):
         value = value[0:8]
     if value == '00000000':
         return
-    return datetime.strptime(value, DATE_FORMAT)
+    return datetime.strptime(value, DATE_FORMAT).date()
 
 
 def to_decimal(value, digits=2):
@@ -558,14 +558,9 @@ class SaleEdi(ModelSQL, ModelView):
 
         sales = Sale.search([
                 ('origin', '=', self),
-                ])
-        if not sales:
-            return
-        elif len(sales) == 1:
+                ], limit=1)
+        if sales:
             return sales[0].id
-        else:
-            raise UserError(gettext('sale_edi_ediversa.msg_to_many_sales',
-                    sales=", ".join(s.number or s.id for s in sales)))
 
     @classmethod
     def search_sale(cls, name, clause):
@@ -832,7 +827,8 @@ class SaleEdi(ModelSQL, ModelView):
                     sale.invoice_party = party.party
                     sale.on_change_invoice_party()
                     sale.invoice_address = (party.address if party.address else
-                        party.party.addresses[0])
+                        party.party and party.party.addresses
+                        and party.party.addresses[0] or None)
                 elif party.type_ == 'NADDP':
                     sale.shipment_party = party.party
                     sale.on_change_shipment_party()
@@ -918,11 +914,6 @@ class Sale(metaclass=PoolMeta):
         return super()._get_origin() + ['edi.sale']
 
     @classmethod
-    def get_origin(cls):
-        res = super().get_origin()
-        return res + [('edi.sale', 'Edi Sale')]
-
-    @classmethod
     @ModelView.button
     @Workflow.transition('cancelled')
     def cancel(cls, sales):
@@ -953,6 +944,40 @@ class Sale(metaclass=PoolMeta):
         EdiSale.save(edi_sales)
         super().draft(sales)
 
+    def check_sale_edi_unique(self):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+        Sale = pool.get('sale.sale')
+
+        if self.origin and isinstance(self.origin, EdiSale):
+            # check that are not other sales that origin is same edi.sale
+            sale_edis = Sale.search([
+                ('origin', '=', str(self.origin)),
+                ('id', '!=', self.id),
+                ], limit=1)
+            if sale_edis:
+                raise UserError(gettext('sale_edi_ediversa.msg_to_many_sales',
+                    sales=sale_edis[0].rec_name))
+
+    @classmethod
+    def validate(cls, sales):
+        super().validate(sales)
+        for sale in sales:
+            sale.check_sale_edi_unique()
+
+    @classmethod
+    def create(cls, vlist):
+        # sure that in vlist has not same edi origin
+        edi_sales = [vals['origin'] for vals in vlist
+            if vals.get('origin') and vals['origin'].startswith('edi.sale')]
+        if len(set(edi_sales)) != len(edi_sales):
+            raise UserError(gettext('sale_edi_ediversa.msg_to_many_sales',
+                sales=', '.join(edi_sales[:5])))
+
+        for vals in vlist:
+            cls.set_edi(vals)
+        return super().create(vlist)
+
     @classmethod
     def write(cls, *args):
         pool = Pool()
@@ -961,37 +986,64 @@ class Sale(metaclass=PoolMeta):
 
         actions = iter(args)
         for sales, values in zip(actions, actions):
-            if 'origin' in values:
-                if (values.get('origin')
-                        and values['origin'].startswith('edi.sale')):
-                    values['is_edi'] = True
-                    edi_sale = EdiSale(int(values['origin'].split(',')[1]))
-                    edi_sale.state = 'done'
-                    edi_sale.save()
-                    if not edi_sale.sale:
-                        continue
-                    raise UserError(
-                        gettext('sale_edi_ediversa.msg_edi_sale_with_sale',
-                            edi_sale=edi_sale.number,
-                            sale=(edi_sale.sale.number
-                                or edi_sale.sale.reference
-                                or edi_sale.sale.id)))
-                elif not values.get('origin'):
-                    edi_sales = [sale.origin for sale in sales
-                            if sale.origin
-                            and sale.origin.__name__ == 'edi.sale']
-                    numbers = ", ".join([
-                            edi_sale.number for edi_sale in edi_sales])
-                    if edi_sales:
-                        key = 'clean_origin_sale_%s' % sales[0].id
-                        if Warning.check(key):
-                            raise UserWarning(key,
-                                gettext('sale_edi_ediversa.'
-                                    'msg_cancel_sale_edi_ediversa',
-                                    edi_sales=numbers))
-                        values['is_edi'] = False
-                        EdiSale.write(edi_sales, {'state': 'cancel'})
+            cls.set_edi(values)
+
+            # in case remove edi from sale, is_edi is false and cancel
+            if 'origin' in values and not values.get('origin'):
+                edi_sales = [sale.origin for sale in sales
+                    if sale.origin and isinstance(sale.origin, EdiSale)]
+                if edi_sales:
+                    numbers = ", ".join([e.number or '#'+str(e.id) for e in edi_sales])
+                    key = 'clean_origin_sale_%s' % sales[0].id
+                    if Warning.check(key):
+                        raise UserWarning(key,
+                            gettext('sale_edi_ediversa.'
+                                'msg_cancel_sale_edi_ediversa',
+                                edi_sales=numbers))
+                    values['is_edi'] = False
+                    EdiSale.write(edi_sales, {'state': 'cancel'})
         super().write(*args)
+
+    @classmethod
+    def set_edi(cls, values):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        if values.get('origin') and values['origin'].startswith('edi.sale'):
+            values['is_edi'] = True
+            edi_sale = EdiSale(int(values['origin'].split(',')[1]))
+            edi_sale.state = 'done'
+            edi_sale.save()
+
+    @classmethod
+    def copy(cls, sales, default=None):
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+
+        sales_wo_edis = []
+        sale_edis = []
+        for sale in sales:
+            if sale.origin and isinstance(sale.origin, EdiSale):
+                sale_edis.append(sale)
+            else:
+                sales_wo_edis.append(sale)
+
+        new_records = []
+        # create sales that origin has not edi.sale
+        new_records += super().copy(sales_wo_edis, default=default)
+
+        # create sales that origin has edi.sale
+        if sale_edis:
+            default.setdefault('is_edi', False)
+            default.setdefault('origin', None)
+            new_records += super().copy(sale_edis, default=default)
+
+        return new_records
 
     @fields.depends('origin', 'is_edi')
     def on_change_origin(self):
