@@ -956,7 +956,7 @@ class Sale(metaclass=PoolMeta):
                 ('id', '!=', self.id),
                 ], limit=1)
             if sale_edis:
-                raise UserError(gettext('sale_edi_ediversa.msg_to_many_sales',
+                raise UserError(gettext('sale_edi_ediversa.msg_too_many_sales',
                     sales=sale_edis[0].rec_name))
 
     @classmethod
@@ -971,7 +971,7 @@ class Sale(metaclass=PoolMeta):
         edi_sales = [vals['origin'] for vals in vlist
             if vals.get('origin') and vals['origin'].startswith('edi.sale')]
         if len(set(edi_sales)) != len(edi_sales):
-            raise UserError(gettext('sale_edi_ediversa.msg_to_many_sales',
+            raise UserError(gettext('sale_edi_ediversa.msg_too_many_sales',
                 sales=', '.join(edi_sales[:5])))
 
         for vals in vlist:

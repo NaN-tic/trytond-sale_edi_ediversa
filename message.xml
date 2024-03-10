@@ -12,8 +12,8 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.message" id="msg_no_product_salable">
             <field name="text">Cannot confirm sale without product "%(code)s" is salable.</field>
         </record>
-        <record model="ir.message" id="msg_to_many_sales">
-            <field name="text">There are to many sales related to this EDI sale: %(sales)s</field>
+        <record model="ir.message" id="msg_too_many_sales">
+            <field name="text">There are too many sales related to this EDI sale: %(sales)s</field>
         </record>
         <record model="ir.message" id="msg_cancel_sale_edi_ediversa">
             <field name="text">The EDI sales "%(edi_sales)s" will be cancelled.</field>
