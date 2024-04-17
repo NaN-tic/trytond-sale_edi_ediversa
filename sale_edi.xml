@@ -133,7 +133,7 @@
       <record model="ir.model.button" id="create_sale_button">
           <field name="name">create_sale</field>
           <field name="string">Create Sales</field>
-          <field name="model" search="[('model', '=', 'edi.sale')]"/>
+          <field name="model">edi.sale</field>
       </record>
 
       <record model="ir.model.button-res.group"
@@ -145,7 +145,7 @@
       <record model="ir.model.button" id="cancel_sale_button">
           <field name="name">cancel_sale</field>
           <field name="string">Cancel Sales</field>
-          <field name="model" search="[('model', '=', 'edi.sale')]"/>
+          <field name="model">edi.sale</field>
       </record>
 
       <record model="ir.model.button-res.group"
@@ -157,7 +157,7 @@
         <record model="ir.model.button" id="search_related_button">
           <field name="name">search_references</field>
           <field name="string">Search References</field>
-          <field name="model" search="[('model', '=', 'edi.sale')]"/>
+          <field name="model">edi.sale</field>
       </record>
       <record model="ir.model.button-res.group"
           id="search_related_button_group_account">
@@ -167,7 +167,7 @@
 
       <record model="ir.rule.group" id="rule_group_edi_sale">
             <field name="name">User in company</field>
-            <field name="model" search="[('model', '=', 'edi.sale')]"/>
+            <field name="model">edi.sale</field>
             <field name="global_p" eval="True"/>
         </record>
         <record model="ir.rule" id="rule_edi_sale">
