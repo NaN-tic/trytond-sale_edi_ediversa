@@ -548,9 +548,12 @@ class SaleEdi(ModelSQL, ModelView):
 
     @classmethod
     def search_party(cls, name, clause):
-        return ['OR', ('manual_party', ) + tuple(clause[1:]),
-                [('parties.type_', '=', 'NADBY'),
-                    ('parties.party', ) + tuple(clause[1:])]]
+        return ['OR',
+                ('manual_party' + clause[0][len(name):], ) + tuple(clause[1:]),
+                [
+                    ('parties.type_', '=', 'NADBY'),
+                    ('parties.party' + clause[0][len(name):], ) + tuple(clause[1:])
+                ]]
 
     def get_sale(self, name=None):
         pool = Pool()
