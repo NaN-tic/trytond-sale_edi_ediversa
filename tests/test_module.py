@@ -44,14 +44,14 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
                         'code': 'EDI-CODE2',
                         }])],
                     },{
-                    'name': 'Customer',
+                    'name': 'Customer2',
                     'addresses': [('create', [])],
                     'identifiers': [('create', [{
                         'type': 'edi_head',
                         'code': 'EDI-CODE3',
                         }])],
                     },{
-                    'name': 'Customer',
+                    'name': 'Customer3',
                     'addresses': [('create', [])],
                     'identifiers': [('create', [{
                         'type': 'edi_head',
@@ -188,5 +188,13 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
             # finally test when copy sale, origin is none
             sale3, sale4 = Sale.copy([sale1, sale2])
             self.assertEqual((sale3.origin, sale4.origin), (None, None))
+
+            self.assertEqual(len(EdiSale.search([])), 3)
+            self.assertEqual(
+                len(EdiSale.search([('party.name', '=', 'Customer')])),
+                3)
+            self.assertEqual(
+                len(EdiSale.search([('party.active', '=', True)])),
+                3)
 
 del ModuleTestCase
