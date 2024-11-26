@@ -866,11 +866,7 @@ class SaleEdi(ModelSQL, ModelView):
                         pricelist_from_edi = False
 
                     if pricelist_from_edi:
-                        if hasattr(line, 'gross_unit_price'):
-                            line.gross_unit_price = eline.unit_price
-                            line.on_change_gross_unit_price()
-                        else:
-                            line.unit_price = eline.unit_price
+                        line.unit_price = eline.unit_price
                     sale.lines += (line,)
             sale.is_edi = True
             sale.origin = str(edi_sale)
