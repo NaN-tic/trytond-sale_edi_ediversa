@@ -62,17 +62,21 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
 
             account_receivable, = Account.search([
                     ('type.receivable', '=', True),
+                    ('closed', '=', False),
                     ('company', '=', company.id),
-                    ])
+                    ], limit=1)
             account_payable, = Account.search([
                     ('type.payable', '=', True),
+                    ('closed', '=', False),
                     ('company', '=', company.id),
-                    ])
+                    ], limit=1)
             account_expense, = Account.search([
                     ('type.expense', '=', True),
+                    ('closed', '=', False),
                     ], limit=1)
             account_revenue, = Account.search([
                     ('type.revenue', '=', True),
+                    ('closed', '=', False),
                     ], limit=1)
 
             unit, = Uom.search([('name', '=', 'Unit')])
