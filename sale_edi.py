@@ -819,7 +819,7 @@ class SaleEdi(ModelSQL, ModelView):
             if edi_sale.sale:
                 continue
             sale = Sale(**default_values)
-            sale.sale_date = edi_sale.document_date
+            sale.sale_date = edi_sale.delivery_date
             sale.party = edi_sale.party
             sale.on_change_party()
             sale.reference = edi_sale.number
