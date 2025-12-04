@@ -10,6 +10,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError, UserWarning
+from trytond.model.exceptions import ValidationError
 from trytond.pyson import Eval
 from sql import Cast
 from sql.functions import Substring
@@ -956,7 +957,7 @@ class Sale(metaclass=PoolMeta):
                 ('id', '!=', self.id),
                 ], limit=1)
             if sale_edis:
-                raise UserError(gettext('sale_edi_ediversa.msg_too_many_sales',
+                raise ValidationError(gettext('sale_edi_ediversa.msg_too_many_sales',
                     sales=sale_edis[0].rec_name))
 
     @classmethod
