@@ -20,6 +20,40 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
     module = 'sale_edi_ediversa'
 
     @with_transaction()
+    def test_import_aldi_orders_format(self):
+        "Test ALDI ORDERS format"
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        sale_edi = EdiSale.import_edi_file([], [
+                'ORDERS_D_01B_UN_EAN010\n',
+                'ORD|3500032980|220|9\n',
+                'DTM|20200120|20200120\n',
+                'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                'G78546758|DE|HRB-12345||9||||12345\n',
+                'LIN|29040400|SRV|10\n',
+                'PIALIN|IN|1000003244|||92|1\n',
+                'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                'QTYLIN|21|24|CT\n',
+                'DTMLIN||||20200120||||||||||||100\n',
+                'CNTRES|||24|1\n',
+                ])
+
+        self.assertIsNotNone(sale_edi)
+        self.assertEqual(sale_edi.document_type, 'ORDERS_D_01B_UN_EAN010')
+        self.assertEqual(sale_edi.number, '3500032980')
+        self.assertEqual(sale_edi.document_date.isoformat(), '2020-01-20')
+        self.assertEqual(sale_edi.delivery_date.isoformat(), '2020-01-20')
+        self.assertEqual(len(sale_edi.lines), 1)
+        self.assertEqual(sale_edi.lines[0].sequence, 10)
+        self.assertEqual(sale_edi.lines[0].pialin[0].description,
+            'MILCH SCHOKOLADE')
+        self.assertEqual(sale_edi.lines[0].delivery_date.isoformat(),
+            '2020-01-20')
+        self.assertEqual(sale_edi.lines[0].expiration_days, 100)
+
+    @with_transaction()
     def test_sale_edi(self):
         "Test sale edi"
         pool = Pool()

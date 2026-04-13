@@ -34,6 +34,9 @@
     <field name="first_delivery_date"/>
     <label name="last_delivery_date"/>
     <field name="last_delivery_date"/>
+    <label name="document_type"/>
+    <field name="document_type"/>
+    <newline/>
     <label name="company"/>
     <field name="company"/>
     <newline/>
