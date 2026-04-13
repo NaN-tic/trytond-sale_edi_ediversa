@@ -21,6 +21,10 @@ DEFAULT_FILES_LOCATION = '/tmp/'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
+DOCUMENT_TYPES = {
+    'ORDERS_D_01B_UN_EAN010', # ALDI
+    'ORDERS_D_96A_UN_EAN008', # Others
+    }
 
 logger = logging.getLogger(__name__)
 
@@ -346,7 +350,10 @@ class SaleEdiLine(ModelSQL, ModelView):
             self.pialin = (pialin,)
         pialin = self.pialin[-1]
         pialin.qualifier = message.pop(0) if message else ''
-        pialin.description = message[-1] if message else ''
+        if message and len(message) >= 3:
+            pialin.description = message[2]
+        else:
+            pialin.description = message[-1] if message else ''
 
     def read_QTYLIN(self, message):
         QTY = Pool().get('edi.sale.line.quantity')
@@ -370,10 +377,16 @@ class SaleEdiLine(ModelSQL, ModelView):
         pialin.description = message[-1] if message else ''
 
     def read_DTMLIN(self, message):
-        self.expiration_date = to_date(message.pop(0)) if message else None
-        self.delivery_date = to_date(message.pop(0)) if message else None
-        self.intervention_date = to_date(message.pop(0)) if message else None
-        days = message.pop(0) if message else 0
+        if len(message) > 15:
+            self.expiration_date = None
+            self.delivery_date = to_date(message[3]) if len(message) > 3 else None
+            self.intervention_date = None
+            days = message[15]
+        else:
+            self.expiration_date = to_date(message.pop(0)) if message else None
+            self.delivery_date = to_date(message.pop(0)) if message else None
+            self.intervention_date = to_date(message.pop(0)) if message else None
+            days = message.pop(0) if message else 0
         self.expiration_days = int(days if days else 0)
 
     def read_FTXLIN(self, message):
@@ -454,6 +467,7 @@ class SaleEdi(ModelSQL, ModelView):
         }
 
     company = fields.Many2One('company.company', 'Company', readonly=True)
+    document_type = fields.Char('Document Type', readonly=True)
     number = fields.Char('Number', readonly=True)
     type_ = fields.Selection([
             (None, ''),
@@ -666,7 +680,7 @@ class SaleEdi(ModelSQL, ModelView):
         sale_edi = None
         sale_line = None
         document_type = data.pop(0).replace('\n', '').replace('\r', '')
-        if document_type != 'ORDERS_D_96A_UN_EAN008':
+        if document_type not in DOCUMENT_TYPES:
             return
         for line in data:
             line = line.replace('\n', '').replace('\r', '')
@@ -674,6 +688,7 @@ class SaleEdi(ModelSQL, ModelView):
             msg_id = line.pop(0)
             if msg_id == 'ORD':
                 sale_edi = SaleEdi(**default_values)
+                sale_edi.document_type = document_type
                 sale_edi.read_ORD(line)
             elif 'FTX' in msg_id:
                 edi_sale_description = EdiSaleDescription()
