@@ -20,8 +20,9 @@ DEFAULT_FILES_LOCATION = '/tmp/'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
+ALDI_DOCUMENT_TYPE = 'ORDERS_D_01B_UN_EAN010'
 DOCUMENT_TYPES = {
-    'ORDERS_D_01B_UN_EAN010', # ALDI
+    ALDI_DOCUMENT_TYPE, # Aldi
     'ORDERS_D_96A_UN_EAN008', # Others
     }
 
@@ -167,6 +168,7 @@ class SaleDescription(ModelSQL, ModelView):
     description = fields.Text('Description', readonly=True)
     sale = fields.Many2One('edi.sale', 'Sale', readonly=True)
     type_ = fields.Selection([
+        (None, ''),
         ('DEL', 'Delivery Information'),
         ('AAI', 'General Information'),
         ('PAC', 'Package Information'),
@@ -181,6 +183,10 @@ class SaleDescription(ModelSQL, ModelView):
         self.type_ = message.pop(0)
         message.pop(0)
         self.description = message.pop(0) if message else ''
+
+    def read_aldi_FTX(self, message):
+        self.description = message.pop(0) if message else ''
+        self.type_ = None
 
 
 class EdiSaleReference(ModelSQL, ModelView):
@@ -302,8 +308,14 @@ class SaleEdiLine(ModelSQL, ModelView):
 
     edi_sale = fields.Many2One('edi.sale', 'Edi Sale', ondelete='CASCADE')
     code = fields.Char('code', readonly=True)
-    code_type = fields.Selection([(None, ''), ('EAN', 'EAN'), ('EAN8', 'EAN8'),
-            ('EAN13', 'EAN13'), ('EAN14', 'EAN14'), ('DUN14', 'DUN14'),
+    code_type = fields.Selection([
+            (None, ''),
+            ('EAN', 'EAN'),
+            ('EAN8', 'EAN8'),
+            ('EAN13', 'EAN13'),
+            ('EAN14', 'EAN14'),
+            ('DUN14', 'DUN14'),
+            ('SRV', 'EAN.UCC'),
             ('EN', 'EN')], 'Code Type', readonly=True)
     sequence = fields.Integer('Sequence', readonly=True)
     pialin = fields.One2Many('edi.sale.line.pialin', 'line', 'Pialin',
@@ -692,7 +704,11 @@ class SaleEdi(ModelSQL, ModelView):
                 sale_edi.read_ORD(line)
             elif 'FTX' in msg_id:
                 edi_sale_description = EdiSaleDescription()
-                edi_sale_description.read_FTX(line)
+
+                if sale_edi.document_type == ALDI_DOCUMENT_TYPE:
+                    edi_sale_description.read_aldi_FTX(line)
+                else:
+                    edi_sale_description.read_FTX(line)
                 if not getattr(sale_edi, 'descriptions', False):
                     sale_edi.descriptions = []
                 sale_edi.descriptions += (edi_sale_description,)
