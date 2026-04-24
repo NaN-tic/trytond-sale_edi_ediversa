@@ -239,6 +239,7 @@ class PIALIN(ModelSQL, ModelView):
     code = fields.Char('Code', readonly=True)
     qualifier = fields.Selection([
             (None, ''),
+            ('A', 'Large description with free format'),
             ('F', 'Free Text'),
             ('C', 'Encoded Description'),
             ('E', 'Short Description'),
