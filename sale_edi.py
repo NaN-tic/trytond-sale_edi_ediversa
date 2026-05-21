@@ -340,11 +340,28 @@ class SaleEdiLine(ModelSQL, ModelView):
     sale_line = fields.Many2One('sale.line', 'sale Line', readonly=True,
         ondelete='RESTRICT')
 
-    def get_sale_quantity(self, name=None):
+    def _compute_sale_quantity(self):
+        purchased_quantity = None
+        purchased_uom = None
+        units_per_box = None
+        units_per_box_uom = None
         for q in self.quantities:
             if q.type_ == '21':
-                return q.quantity
-        return 0
+                purchased_quantity = q.quantity
+                purchased_uom = (q.uom_char or '').strip()
+            elif q.type_ == '59':
+                units_per_box = q.quantity
+                units_per_box_uom = (q.uom_char or '').strip()
+
+        if purchased_quantity is None:
+            return 0
+        if (purchased_uom == 'CT' and units_per_box is not None
+                and units_per_box_uom == 'PCE'):
+            return purchased_quantity * units_per_box
+        return purchased_quantity
+
+    def get_sale_quantity(self, name=None):
+        return self._compute_sale_quantity()
 
     def read_PIALIN(self, message):
         if not getattr(self, 'pialin', False):
@@ -373,13 +390,12 @@ class SaleEdiLine(ModelSQL, ModelView):
         qty.type_ = message.pop(0) if message else ''
         quantity = message.pop(0) if message else None
         qty.quantity = float(quantity) if quantity else 0
-        if qty.type_ == '21':
-            self.quantity = qty.quantity
         if message:
             qty.uom_char = message.pop(0)
         if not getattr(self, 'quantities', False):
             self.quantities = []
         self.quantities += (qty,)
+        self.quantity = self._compute_sale_quantity()
 
     def read_ALILIN(self, message):
         if not self.pialin:
