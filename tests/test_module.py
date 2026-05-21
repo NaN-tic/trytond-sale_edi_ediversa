@@ -52,6 +52,85 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
         self.assertEqual(sale_edi.lines[0].delivery_date.isoformat(),
             '2020-01-20')
         self.assertEqual(sale_edi.lines[0].expiration_days, 100)
+        self.assertEqual(sale_edi.lines[0].quantity, 24)
+
+    @with_transaction()
+    def test_import_quantity_with_uom_and_units_per_box(self):
+        "Test quantity from boxes and units per box"
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        sale_edi = EdiSale.import_edi_file([], [
+                'ORDERS_D_01B_UN_EAN010\n',
+                'ORD|3500032981|220|9\n',
+                'DTM|20200120|20200120\n',
+                'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                'G78546758|DE|HRB-12345||9||||12345\n',
+                'LIN|29040400|SRV|10\n',
+                'PIALIN|IN|1000003244|||92|1\n',
+                'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                'QTYLIN|21|24|CT\n',
+                'QTYLIN|59|6|PCE\n',
+                'DTMLIN||||20200120||||||||||||100\n',
+                'CNTRES|||144|1\n',
+                ])
+
+        self.assertIsNotNone(sale_edi)
+        self.assertEqual(len(sale_edi.lines), 1)
+        self.assertEqual(sale_edi.lines[0].quantity, 144)
+
+    @with_transaction()
+    def test_import_quantity_does_not_multiply_with_unexpected_59_uom(self):
+        "Test quantity is not multiplied with unexpected 59 uom"
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        sale_edi = EdiSale.import_edi_file([], [
+                'ORDERS_D_01B_UN_EAN010\n',
+                'ORD|3500032982|220|9\n',
+                'DTM|20200120|20200120\n',
+                'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                'G78546758|DE|HRB-12345||9||||12345\n',
+                'LIN|29040400|SRV|10\n',
+                'PIALIN|IN|1000003244|||92|1\n',
+                'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                'QTYLIN|21|24|CT\n',
+                'QTYLIN|59|6|BOX\n',
+                'DTMLIN||||20200120||||||||||||100\n',
+                'CNTRES|||24|1\n',
+                ])
+
+        self.assertIsNotNone(sale_edi)
+        self.assertEqual(len(sale_edi.lines), 1)
+        self.assertEqual(sale_edi.lines[0].quantity, 24)
+
+    @with_transaction()
+    def test_import_quantity_does_not_multiply_with_unexpected_21_uom(self):
+        "Test quantity is not multiplied with unexpected 21 uom"
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        sale_edi = EdiSale.import_edi_file([], [
+                'ORDERS_D_01B_UN_EAN010\n',
+                'ORD|3500032983|220|9\n',
+                'DTM|20200120|20200120\n',
+                'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                'G78546758|DE|HRB-12345||9||||12345\n',
+                'LIN|29040400|SRV|10\n',
+                'PIALIN|IN|1000003244|||92|1\n',
+                'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                'QTYLIN|21|24|PCE\n',
+                'QTYLIN|59|6|PCE\n',
+                'DTMLIN||||20200120||||||||||||100\n',
+                'CNTRES|||24|1\n',
+                ])
+
+        self.assertIsNotNone(sale_edi)
+        self.assertEqual(len(sale_edi.lines), 1)
+        self.assertEqual(sale_edi.lines[0].quantity, 24)
 
     @with_transaction()
     def test_sale_edi(self):
