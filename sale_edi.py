@@ -342,17 +342,24 @@ class SaleEdiLine(ModelSQL, ModelView):
         ondelete='RESTRICT')
 
     def _compute_sale_quantity(self):
+
+        def get_uom(quantity):
+            try:
+                return (quantity.uom_char or '').strip()
+            except AttributeError:
+                return ''
+
         purchased_quantity = None
         purchased_uom = None
         units_per_box = None
         units_per_box_uom = None
-        for q in self.quantities:
-            if q.type_ == '21':
-                purchased_quantity = q.quantity
-                purchased_uom = (q.uom_char or '').strip()
-            elif q.type_ == '59':
-                units_per_box = q.quantity
-                units_per_box_uom = (q.uom_char or '').strip()
+        for qty in self.quantities:
+            if qty.type_ == '21':
+                purchased_quantity = qty.quantity
+                purchased_uom = get_uom(qty)
+            elif qty.type_ == '59':
+                units_per_box = qty.quantity
+                units_per_box_uom = get_uom(qty)
 
         if purchased_quantity is None:
             return 0
