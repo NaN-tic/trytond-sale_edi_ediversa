@@ -3,6 +3,7 @@
 # this repository contains the full copyright notices and license terms.
 import os
 import shutil
+import datetime
 from decimal import Decimal
 
 from trytond.modules.account.tests import create_chart
@@ -44,13 +45,17 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
         self.assertEqual(sale_edi.document_type, 'ORDERS_D_01B_UN_EAN010')
         self.assertEqual(sale_edi.number, '3500032980')
         self.assertEqual(sale_edi.document_date.isoformat(), '2020-01-20')
-        self.assertEqual(sale_edi.delivery_date.isoformat(), '2020-01-20')
+        self.assertEqual(
+            sale_edi.delivery_date.isoformat(), '2020-01-20T00:00:00')
+        self.assertIsInstance(sale_edi.delivery_date, datetime.datetime)
         self.assertEqual(len(sale_edi.lines), 1)
         self.assertEqual(sale_edi.lines[0].sequence, 10)
         self.assertEqual(sale_edi.lines[0].pialin[0].description,
             'MILCH SCHOKOLADE')
         self.assertEqual(sale_edi.lines[0].delivery_date.isoformat(),
-            '2020-01-20')
+            '2020-01-20T00:00:00')
+        self.assertIsInstance(
+            sale_edi.lines[0].delivery_date, datetime.datetime)
         self.assertEqual(sale_edi.lines[0].expiration_days, 100)
         self.assertEqual(sale_edi.lines[0].quantity, 24)
 
