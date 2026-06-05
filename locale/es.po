@@ -146,6 +146,10 @@ msgctxt "field:edi.sale.line,delivery_date:"
 msgid "Delivery Date"
 msgstr "Fecha de envio"
 
+msgctxt "view:edi.sale.line:"
+msgid "Delivery Time"
+msgstr "Hora de entrega"
+
 msgctxt "field:edi.sale.line,discounts:"
 msgid "Discounts"
 msgstr "Descuentos"
