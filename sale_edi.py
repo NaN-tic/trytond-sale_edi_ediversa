@@ -29,14 +29,23 @@ DOCUMENT_TYPES = {
 
 logger = logging.getLogger(__name__)
 
-def to_date(value):
+def _to_date(value, as_datetime=False):
     if value is None or value == '':
         return None
     if len(value) > 8:
         value = value[0:8]
     if value == '00000000':
         return
-    return datetime.strptime(value, DATE_FORMAT).date()
+    parsed = datetime.strptime(value, DATE_FORMAT)
+    return parsed if as_datetime else parsed.date()
+
+
+def to_date(value):
+    return _to_date(value)
+
+
+def to_datetime(value):
+    return _to_date(value, as_datetime=True)
 
 
 def to_decimal(value, digits=2):
@@ -322,7 +331,7 @@ class SaleEdiLine(ModelSQL, ModelView):
     pialin = fields.One2Many('edi.sale.line.pialin', 'line', 'Pialin',
         readonly=True)
     expiration_date = fields.Date('Expiration Date', readonly=True)
-    delivery_date = fields.Date('Delivery Date', readonly=True)
+    delivery_date = fields.DateTime('Delivery Date', readonly=True)
     intervention_date = fields.Date('Intervention Date', readonly=True)
     expiration_days = fields.Integer('Expiration Days', readonly=True)
     base_amount = fields.Numeric('Base Amount', digits=(16, 2), readonly=True)
@@ -340,6 +349,21 @@ class SaleEdiLine(ModelSQL, ModelView):
          'get_sale_quantity')
     sale_line = fields.Many2One('sale.line', 'sale Line', readonly=True,
         ondelete='RESTRICT')
+
+    @classmethod
+    def __register__(cls, module_name):
+        table = cls.__table_handler__(module_name)
+        migrate_delivery_date = (table.column_exist('delivery_date')
+            and table.column_is_type('delivery_date', 'date'))
+
+        super().__register__(module_name)
+
+        if migrate_delivery_date:
+            cursor = Transaction().connection.cursor()
+            sql_table = cls.__table__()
+            cursor.execute(*sql_table.update(
+                    columns=[sql_table.delivery_date],
+                    values=[sql_table.delivery_date.cast('timestamp')]))
 
     def _compute_sale_quantity(self):
 
@@ -415,12 +439,14 @@ class SaleEdiLine(ModelSQL, ModelView):
     def read_DTMLIN(self, message):
         if len(message) > 15:
             self.expiration_date = None
-            self.delivery_date = to_date(message[3]) if len(message) > 3 else None
+            self.delivery_date = (
+                to_datetime(message[3]) if len(message) > 3 else None)
             self.intervention_date = None
             days = message[15]
         else:
             self.expiration_date = to_date(message.pop(0)) if message else None
-            self.delivery_date = to_date(message.pop(0)) if message else None
+            self.delivery_date = (
+                to_datetime(message.pop(0)) if message else None)
             self.intervention_date = to_date(message.pop(0)) if message else None
             days = message.pop(0) if message else 0
         self.expiration_days = int(days if days else 0)
@@ -519,7 +545,7 @@ class SaleEdi(ModelSQL, ModelView):
             ('5', 'Replazement'),
             ('31', 'Copy')], 'Function Type', readonly=True)
     document_date = fields.Date('Document Date', readonly=True)
-    delivery_date = fields.Date('Delivery Date', readonly=True)
+    delivery_date = fields.DateTime('Delivery Date', readonly=True)
     first_delivery_date = fields.Date('First Delivery Date', readonly=True)
     last_delivery_date = fields.Date('Last Delivery Date', readonly=True)
     special_condition = fields.Selection([
@@ -562,6 +588,21 @@ class SaleEdi(ModelSQL, ModelView):
             ('no', 'No'),
             ('party', 'Party'),
             ], "Sale PriceList From EDI", sort=False, states=_states)
+
+    @classmethod
+    def __register__(cls, module_name):
+        table = cls.__table_handler__(module_name)
+        migrate_delivery_date = (table.column_exist('delivery_date')
+            and table.column_is_type('delivery_date', 'date'))
+
+        super().__register__(module_name)
+
+        if migrate_delivery_date:
+            cursor = Transaction().connection.cursor()
+            sql_table = cls.__table__()
+            cursor.execute(*sql_table.update(
+                    columns=[sql_table.delivery_date],
+                    values=[sql_table.delivery_date.cast('timestamp')]))
 
     @classmethod
     def __setup__(cls):
@@ -648,7 +689,7 @@ class SaleEdi(ModelSQL, ModelView):
     def read_DTM(self, message):
         self.document_date = to_date(message.pop(0))
         if message:
-            self.delivery_date = to_date(message.pop(0))
+            self.delivery_date = to_datetime(message.pop(0))
         if message:
             self.first_delivery_date = to_date(message.pop(0))
         if message:
@@ -876,7 +917,8 @@ class SaleEdi(ModelSQL, ModelView):
             if edi_sale.sale:
                 continue
             sale = Sale(**default_values)
-            sale.sale_date = (edi_sale.delivery_date
+            sale.sale_date = ((edi_sale.delivery_date.date()
+                    if edi_sale.delivery_date else None)
                 or edi_sale.last_delivery_date or edi_sale.document_date)
             sale.party = edi_sale.party
             sale.on_change_party()
