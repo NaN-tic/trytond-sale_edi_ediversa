@@ -99,6 +99,42 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
             '2020-01-20T11:30:00')
 
     @with_transaction()
+    def test_import_aldi_orders_datetime_format_with_company_timezone(self):
+        "Test ALDI ORDERS datetime format stored as UTC"
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        company = create_company()
+        company.timezone = 'Europe/Madrid'
+        company.save()
+
+        with set_company(company):
+            sale_edi = EdiSale.import_edi_file([], [
+                    'ORDERS_D_01B_UN_EAN010\n',
+                    'ORD|3500032985|220|9\n',
+                    'DTM|20200615|202006150800|202006150900|202006151000\n',
+                    'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                    '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                    'G78546758|DE|HRB-12345||9||||12345\n',
+                    'LIN|29040400|SRV|10\n',
+                    'PIALIN|IN|1000003244|||92|1\n',
+                    'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                    'QTYLIN|21|24|CT\n',
+                    'DTMLIN||||202006151130||||||||||||100\n',
+                    'CNTRES|||24|1\n',
+                    ])
+
+        self.assertIsNotNone(sale_edi)
+        self.assertEqual(
+            sale_edi.delivery_date.isoformat(), '2020-06-15T06:00:00')
+        self.assertEqual(
+            sale_edi.first_delivery_date.isoformat(), '2020-06-15T07:00:00')
+        self.assertEqual(
+            sale_edi.last_delivery_date.isoformat(), '2020-06-15T08:00:00')
+        self.assertEqual(sale_edi.lines[0].delivery_date.isoformat(),
+            '2020-06-15T09:30:00')
+
+    @with_transaction()
     def test_import_quantity_with_uom_and_units_per_box(self):
         "Test quantity from boxes and units per box"
         pool = Pool()
