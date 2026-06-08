@@ -29,7 +29,7 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
         sale_edi = EdiSale.import_edi_file([], [
                 'ORDERS_D_01B_UN_EAN010\n',
                 'ORD|3500032980|220|9\n',
-                'DTM|20200120|20200120\n',
+                'DTM|20200120|20200120|20200121|20200122\n',
                 'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
                 '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
                 'G78546758|DE|HRB-12345||9||||12345\n',
@@ -48,6 +48,14 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
         self.assertEqual(
             sale_edi.delivery_date.isoformat(), '2020-01-20T00:00:00')
         self.assertIsInstance(sale_edi.delivery_date, datetime.datetime)
+        self.assertEqual(
+            sale_edi.first_delivery_date.isoformat(), '2020-01-21T00:00:00')
+        self.assertIsInstance(
+            sale_edi.first_delivery_date, datetime.datetime)
+        self.assertEqual(
+            sale_edi.last_delivery_date.isoformat(), '2020-01-22T00:00:00')
+        self.assertIsInstance(
+            sale_edi.last_delivery_date, datetime.datetime)
         self.assertEqual(len(sale_edi.lines), 1)
         self.assertEqual(sale_edi.lines[0].sequence, 10)
         self.assertEqual(sale_edi.lines[0].pialin[0].description,
@@ -58,6 +66,37 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
             sale_edi.lines[0].delivery_date, datetime.datetime)
         self.assertEqual(sale_edi.lines[0].expiration_days, 100)
         self.assertEqual(sale_edi.lines[0].quantity, 24)
+
+    @with_transaction()
+    def test_import_aldi_orders_datetime_format(self):
+        "Test ALDI ORDERS datetime format"
+        pool = Pool()
+        EdiSale = pool.get('edi.sale')
+
+        sale_edi = EdiSale.import_edi_file([], [
+                'ORDERS_D_01B_UN_EAN010\n',
+                'ORD|3500032984|220|9\n',
+                'DTM|20200120|202001200800|202001210900|202001221000\n',
+                'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                'G78546758|DE|HRB-12345||9||||12345\n',
+                'LIN|29040400|SRV|10\n',
+                'PIALIN|IN|1000003244|||92|1\n',
+                'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                'QTYLIN|21|24|CT\n',
+                'DTMLIN||||202001201130||||||||||||100\n',
+                'CNTRES|||24|1\n',
+                ])
+
+        self.assertIsNotNone(sale_edi)
+        self.assertEqual(
+            sale_edi.delivery_date.isoformat(), '2020-01-20T08:00:00')
+        self.assertEqual(
+            sale_edi.first_delivery_date.isoformat(), '2020-01-21T09:00:00')
+        self.assertEqual(
+            sale_edi.last_delivery_date.isoformat(), '2020-01-22T10:00:00')
+        self.assertEqual(sale_edi.lines[0].delivery_date.isoformat(),
+            '2020-01-20T11:30:00')
 
     @with_transaction()
     def test_import_quantity_with_uom_and_units_per_box(self):

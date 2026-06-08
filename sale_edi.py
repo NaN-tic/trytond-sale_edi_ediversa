@@ -20,6 +20,7 @@ DEFAULT_FILES_LOCATION = '/tmp/'
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 KNOWN_EXTENSIONS = ['.txt', '.edi', '.pla']
 DATE_FORMAT = '%Y%m%d'
+DATETIME_FORMAT = '%Y%m%d%H%M'
 ALDI_DOCUMENT_TYPE = 'ORDERS_D_01B_UN_EAN010'
 DOCUMENT_TYPES = {
     ALDI_DOCUMENT_TYPE, # Aldi
@@ -31,12 +32,13 @@ logger = logging.getLogger(__name__)
 def _to_date(value, as_datetime=False):
     if value is None or value == '':
         return None
-    if len(value) > 8:
-        value = value[0:8]
-    if value == '00000000':
+    if value[:8] == '00000000':
         return
-    parsed = datetime.strptime(value, DATE_FORMAT)
-    return parsed if as_datetime else parsed.date()
+    if as_datetime:
+        if len(value) >= 12:
+            return datetime.strptime(value[:12], DATETIME_FORMAT)
+        return datetime.strptime(value[:8], DATE_FORMAT)
+    return datetime.strptime(value[:8], DATE_FORMAT).date()
 
 
 def to_date(value):
@@ -545,8 +547,8 @@ class SaleEdi(ModelSQL, ModelView):
             ('31', 'Copy')], 'Function Type', readonly=True)
     document_date = fields.Date('Document Date', readonly=True)
     delivery_date = fields.DateTime('Delivery Date', readonly=True)
-    first_delivery_date = fields.Date('First Delivery Date', readonly=True)
-    last_delivery_date = fields.Date('Last Delivery Date', readonly=True)
+    first_delivery_date = fields.DateTime('First Delivery Date', readonly=True)
+    last_delivery_date = fields.DateTime('Last Delivery Date', readonly=True)
     special_condition = fields.Selection([
             (None, ''),
             ('81E', 'Facturar pero no reabastecer'),
@@ -591,17 +593,25 @@ class SaleEdi(ModelSQL, ModelView):
     @classmethod
     def __register__(cls, module_name):
         table = cls.__table_handler__(module_name)
-        migrate_delivery_date = (table.column_exist('delivery_date')
-            and table.column_is_type('delivery_date', 'date'))
+        fields_to_migrate = [
+            field_name for field_name in (
+                'delivery_date', 'first_delivery_date', 'last_delivery_date')
+            if (table.column_exist(field_name)
+                and table.column_is_type(field_name, 'date'))
+            ]
 
         super().__register__(module_name)
 
-        if migrate_delivery_date:
+        if fields_to_migrate:
             cursor = Transaction().connection.cursor()
             sql_table = cls.__table__()
+            columns = [getattr(sql_table, field_name)
+                for field_name in fields_to_migrate]
+            values = [getattr(sql_table, field_name).cast('timestamp')
+                for field_name in fields_to_migrate]
             cursor.execute(*sql_table.update(
-                    columns=[sql_table.delivery_date],
-                    values=[sql_table.delivery_date.cast('timestamp')]))
+                    columns=columns,
+                    values=values))
 
     @classmethod
     def __setup__(cls):
@@ -690,9 +700,9 @@ class SaleEdi(ModelSQL, ModelView):
         if message:
             self.delivery_date = to_datetime(message.pop(0))
         if message:
-            self.first_delivery_date = to_date(message.pop(0))
+            self.first_delivery_date = to_datetime(message.pop(0))
         if message:
-            self.last_delivery_date = to_date(message.pop(0))
+            self.last_delivery_date = to_datetime(message.pop(0))
 
     def get_ALI(self, message):
         self.special_condition = message.pop(0)
@@ -918,7 +928,9 @@ class SaleEdi(ModelSQL, ModelView):
             sale = Sale(**default_values)
             sale.sale_date = ((edi_sale.delivery_date.date()
                     if edi_sale.delivery_date else None)
-                or edi_sale.last_delivery_date or edi_sale.document_date)
+                or (edi_sale.last_delivery_date.date()
+                    if edi_sale.last_delivery_date else None)
+                or edi_sale.document_date)
             sale.party = edi_sale.party
             sale.on_change_party()
             sale.reference = edi_sale.number
