@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 from decimal import Decimal
 
+import pytz
 from trytond.model import fields, ModelSQL, ModelView, Workflow
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
@@ -48,6 +49,21 @@ def to_date(value):
 
 def to_datetime(value):
     return _to_date(value, as_datetime=True)
+
+
+def local_to_utc(value):
+    if not value:
+        return value
+    company_id = Transaction().context.get('company')
+    if not company_id:
+        return value
+    Company = Pool().get('company.company')
+    company = Company(company_id)
+    if not company.timezone:
+        return value
+    timezone = pytz.timezone(company.timezone)
+    return timezone.localize(value, is_dst=None).astimezone(
+        pytz.utc).replace(tzinfo=None)
 
 
 def to_decimal(value, digits=2):
@@ -442,13 +458,15 @@ class SaleEdiLine(ModelSQL, ModelView):
         if len(message) > 15:
             self.expiration_date = None
             self.delivery_date = (
-                to_datetime(message[3]) if len(message) > 3 else None)
+                local_to_utc(to_datetime(message[3]))
+                if len(message) > 3 else None)
             self.intervention_date = None
             days = message[15]
         else:
             self.expiration_date = to_date(message.pop(0)) if message else None
             self.delivery_date = (
-                to_datetime(message.pop(0)) if message else None)
+                local_to_utc(to_datetime(message.pop(0)))
+                if message else None)
             self.intervention_date = to_date(message.pop(0)) if message else None
             days = message.pop(0) if message else 0
         self.expiration_days = int(days if days else 0)
@@ -699,11 +717,12 @@ class SaleEdi(ModelSQL, ModelView):
     def read_DTM(self, message):
         self.document_date = to_date(message.pop(0))
         if message:
-            self.delivery_date = to_datetime(message.pop(0))
+            self.delivery_date = local_to_utc(to_datetime(message.pop(0)))
         if message:
-            self.first_delivery_date = to_datetime(message.pop(0))
+            self.first_delivery_date = local_to_utc(
+                to_datetime(message.pop(0)))
         if message:
-            self.last_delivery_date = to_datetime(message.pop(0))
+            self.last_delivery_date = local_to_utc(to_datetime(message.pop(0)))
 
     def get_ALI(self, message):
         self.special_condition = message.pop(0)
