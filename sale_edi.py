@@ -65,6 +65,20 @@ def local_to_utc(value):
         pytz.utc).replace(tzinfo=None)
 
 
+def utc_to_local_date(value):
+    if not value:
+        return value
+    company_id = Transaction().context.get('company')
+    if not company_id:
+        return value.date()
+    Company = Pool().get('company.company')
+    company = Company(company_id)
+    if not company.timezone:
+        return value.date()
+    timezone = pytz.timezone(company.timezone)
+    return pytz.utc.localize(value).astimezone(timezone).date()
+
+
 def to_decimal(value, digits=2):
     if value is None or value == '':
         return None
@@ -945,9 +959,9 @@ class SaleEdi(ModelSQL, ModelView):
             if edi_sale.sale:
                 continue
             sale = Sale(**default_values)
-            sale.sale_date = ((edi_sale.delivery_date.date()
+            sale.sale_date = ((utc_to_local_date(edi_sale.delivery_date)
                     if edi_sale.delivery_date else None)
-                or (edi_sale.last_delivery_date.date()
+                or (utc_to_local_date(edi_sale.last_delivery_date)
                     if edi_sale.last_delivery_date else None)
                 or edi_sale.document_date)
             sale.party = edi_sale.party
