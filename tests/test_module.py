@@ -163,9 +163,13 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
 
             account_expense, = Account.search([
                     ('type.expense', '=', True),
+                    ('closed', '!=', True),
+                    ('company', '=', company.id),
                     ], limit=1)
             account_revenue, = Account.search([
                     ('type.revenue', '=', True),
+                    ('closed', '!=', True),
+                    ('company', '=', company.id),
                     ], limit=1)
             unit, = Uom.search([('name', '=', 'Unit')])
 
