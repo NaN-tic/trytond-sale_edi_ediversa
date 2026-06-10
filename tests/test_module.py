@@ -135,6 +135,86 @@ class SaleEdiEdiversaTestCase(CompanyTestMixin, ModuleTestCase):
             '2020-06-15T09:30:00')
 
     @with_transaction()
+    def test_create_sale_uses_local_date_from_utc_delivery_datetime(self):
+        "Test sale_date uses company local date from UTC datetime"
+        pool = Pool()
+        Account = pool.get('account.account')
+        Category = pool.get('product.category')
+        Template = pool.get('product.template')
+        Uom = pool.get('product.uom')
+        EdiSale = pool.get('edi.sale')
+        Party = pool.get('party.party')
+
+        company = create_company()
+        company.timezone = 'Europe/Madrid'
+        company.save()
+
+        with set_company(company):
+            create_chart(company)
+
+            Party.create([{
+                    'name': 'Customer TZ',
+                    'addresses': [('create', [])],
+                    'identifiers': [('create', [{
+                        'type': 'edi_head',
+                        'code': '2345678234562',
+                        }])],
+                    }])
+
+            account_expense, = Account.search([
+                    ('type.expense', '=', True),
+                    ], limit=1)
+            account_revenue, = Account.search([
+                    ('type.revenue', '=', True),
+                    ], limit=1)
+            unit, = Uom.search([('name', '=', 'Unit')])
+
+            account_category = Category()
+            account_category.name = 'Account Category TZ'
+            account_category.accounting = True
+            account_category.account_expense = account_expense
+            account_category.account_revenue = account_revenue
+            account_category.save()
+
+            Template.create([{
+                    'name': 'Product TZ',
+                    'default_uom': unit.id,
+                    'sale_uom': unit.id,
+                    'list_price': Decimal(5),
+                    'code': 'CODE-TZ',
+                    'salable': True,
+                    'account_category': account_category,
+                    'products': [('create', [{
+                        'identifiers': [('create', [
+                            {'type': 'ean', 'code': '1562683392128'}])],
+                        }])],
+                    }])
+
+            sale_edi = EdiSale.import_edi_file([], [
+                    'ORDERS_D_01B_UN_EAN010\n',
+                    'ORD|3500032986|220|9\n',
+                    'DTM|20260622|202606230000\n',
+                    'NADBY|2345678234562||||ALDI GMBH CO. KG BEVERSTEDT'
+                    '|HEERSTEDTER MUEHLENWEG 22|BEVERSTEDT|27616|'
+                    'G78546758|DE|HRB-12345||9||||12345\n',
+                    'LIN|1562683392128|SRV|10\n',
+                    'PIALIN|IN|1000003244|||92|1\n',
+                    'IMDLIN|A|||MILCH SCHOKOLADE|DE\n',
+                    'QTYLIN|21|24|CT\n',
+                    'DTMLIN||||202606230000||||||||||||100\n',
+                    'CNTRES|||24|1\n',
+                    ])
+
+            EdiSale.save([sale_edi])
+            EdiSale.create_sale([sale_edi])
+
+            sale = sale_edi.sale
+            self.assertEqual(
+                sale_edi.delivery_date.isoformat(), '2026-06-22T22:00:00')
+            self.assertEqual(
+                sale.sale_date.isoformat(), '2026-06-23')
+
+    @with_transaction()
     def test_import_quantity_with_uom_and_units_per_box(self):
         "Test quantity from boxes and units per box"
         pool = Pool()
