@@ -8,7 +8,7 @@ from decimal import Decimal
 import pytz
 from trytond.model import fields, ModelSQL, ModelView, Workflow
 from trytond.pool import Pool, PoolMeta
-from trytond.transaction import Transaction
+from trytond.transaction import Transaction, without_check_access
 from trytond.i18n import gettext
 from trytond.exceptions import UserError, UserWarning
 from trytond.model.exceptions import ValidationError
@@ -1144,7 +1144,8 @@ class Sale(metaclass=PoolMeta):
                                 'msg_cancel_sale_edi_ediversa',
                                 edi_sales=numbers))
                     values['is_edi'] = False
-                    EdiSale.write(edi_sales, {'state': 'cancel'})
+                    with without_check_access():
+                        EdiSale.write(edi_sales, {'state': 'cancel'})
         super().write(*args)
 
     @classmethod
@@ -1156,7 +1157,8 @@ class Sale(metaclass=PoolMeta):
             values['is_edi'] = True
             edi_sale = EdiSale(int(values['origin'].split(',')[1]))
             edi_sale.state = 'done'
-            edi_sale.save()
+            with without_check_access():
+                edi_sale.save()
 
     @classmethod
     def copy(cls, sales, default=None):
