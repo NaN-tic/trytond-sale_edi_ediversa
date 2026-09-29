@@ -791,7 +791,10 @@ class SaleEdi(ModelSQL, ModelView):
         PartyEdi = pool.get('edi.sale.party')
         # Configuration = pool.get('stock.configuration')
 
-        default_values = SaleEdi.default_get(SaleEdi._fields.keys(),
+        default_values = SaleEdi.default_get([
+                name for name, field in SaleEdi._fields.items()
+                if not field.readonly
+                ],
             with_rec_name=False)
 
         # config = Configuration(1)
@@ -952,7 +955,10 @@ class SaleEdi(ModelSQL, ModelView):
         Sale = pool.get('sale.sale')
         Line = pool.get('sale.line')
 
-        default_values = Sale.default_get(Sale._fields.keys(),
+        default_values = Sale.default_get([
+                name for name, field in Sale._fields.items()
+                if not field.readonly
+                ],
                 with_rec_name=False)
         to_save = []
         to_done = []
