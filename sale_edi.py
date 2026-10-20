@@ -95,6 +95,7 @@ class Cron(metaclass=PoolMeta):
         cls.method.selection.extend([
             ('edi.sale|import_sales',
             'Import EDI Orders')])
+        cls.methods_company_needed.add('edi.sale|import_sales')
 
 
 class SaleConfiguration(metaclass=PoolMeta):
